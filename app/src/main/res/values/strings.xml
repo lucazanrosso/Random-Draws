@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Random Draws</string>
+    <string name="groups">Groups</string>
+    <string name="draws">Draws</string>
+    <string name="back_button">Back button</string>
+    <string name="new_group">New group</string>
+    <string name="drag_and_drop">Drag and Drop</string>
+</resources>
