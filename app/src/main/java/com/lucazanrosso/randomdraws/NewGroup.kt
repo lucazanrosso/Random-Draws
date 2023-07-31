@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -15,30 +14,29 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.lucazanrosso.randomdraws.data.AppDatabase
 import com.lucazanrosso.randomdraws.data.Item
-import com.lucazanrosso.randomdraws.data.ItemDao
 import kotlinx.coroutines.flow.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewGroupScreen(
     navController: NavController,
-    db : AppDatabase
+    db : AppDatabase,
+    viewModel: NewGroupViewModel = viewModel()
 ) {
     val dao = db.itemDao()
     var groupName by rememberSaveable { mutableStateOf("") }
-    var list = remember { mutableStateListOf<String>("","","") }
+//    var listSize by rememberSaveable { mutableStateOf(3) }
+//    val list = remember { mutableStateListOf("", "", "") }
     var onClickSave by remember { mutableStateOf(false) }
 
     LazyColumn() {
@@ -52,12 +50,36 @@ fun NewGroupScreen(
             }
         ) }
 
-        itemsIndexed(items = list) { index, item ->
-            NewItem(index, list, onClickSave, dao, groupName)
+        itemsIndexed(items = viewModel.list, key = {_, listItem ->
+            listItem.id
+        }) { index, item ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                var text by rememberSaveable { mutableStateOf(item.name) }
+                val label = index + 1
+
+                OutlinedTextField(
+                    value = text,
+
+                    label = { Text(text = "$label") },
+                    onValueChange = {
+                        text = it
+                        viewModel.updateItem(index, text)
+                    }
+                )
+
+                IconButton(onClick = { viewModel.removeItem(index) }) {
+                    Icon(Icons.Rounded.Clear, contentDescription = stringResource(R.string.drag_and_drop))
+                }
+
+                if (onClickSave && text.isNotEmpty()) dao.insert(Item(group = groupName, name = text))
+
+            }
         }
 
         item {
-            IconButton(onClick = { list.add("") }) {
+            IconButton(onClick = { viewModel.addItemToList() }) {
                 Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.drag_and_drop))
             }
         }
@@ -72,56 +94,5 @@ fun NewGroupScreen(
                 Text(text = "Save")
             }
         }
-
-        item {
-            Button(onClick = {
-                println(groupName)
-                println(list.size)
-                list.forEach {
-                    println(it)
-                }
-            }) {
-                Text(text = "Print")
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun NewItem(
-    index: Int,
-    list: SnapshotStateList<String>,
-    onSaveClick: Boolean,
-    dao : ItemDao,
-    groupName: String,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ){
-        var text by rememberSaveable { mutableStateOf(list[index]) }
-        val label = index + 1
-
-//        IconButton(onClick = { /* doSomething() */ }) {
-//            Icon(Icons.Rounded.Menu, contentDescription = stringResource(R.string.drag_and_drop))
-//        }
-
-        OutlinedTextField(
-            value = text,
-
-            label = { Text(text = "$label") },
-            onValueChange = {
-                text = it
-                list[index] = text
-            }
-        )
-
-        IconButton(onClick = { list.removeAt(index) }) {
-            Icon(Icons.Rounded.Clear, contentDescription = stringResource(R.string.drag_and_drop))
-        }
-
-        if (onSaveClick && text.isNotEmpty()) dao.insert(Item(group = groupName, name = text))
-
     }
 }
