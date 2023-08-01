@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 class NewGroupViewModel : ViewModel() {
 
     private var progressiveIdForKeys = mutableStateOf(3)
+    var group = mutableStateOf("")
     var list = mutableStateListOf<ItemDetails>(
         ItemDetails(0, ""),
         ItemDetails(1, ""),
@@ -18,8 +19,8 @@ class NewGroupViewModel : ViewModel() {
         list[index].name = name
     }
 
-    fun addItemToList() {
-        list.add(ItemDetails(progressiveIdForKeys.value, ""))
+    fun addItemToList(index: Int) {
+        list.add(index, ItemDetails(progressiveIdForKeys.value, ""))
         progressiveIdForKeys.value++
     }
 
