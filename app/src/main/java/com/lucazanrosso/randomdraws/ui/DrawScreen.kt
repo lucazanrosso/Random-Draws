@@ -1,4 +1,4 @@
-package com.lucazanrosso.randomdraws
+package com.lucazanrosso.randomdraws.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text

@@ -1,4 +1,4 @@
-package com.lucazanrosso.randomdraws
+package com.lucazanrosso.randomdraws.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
@@ -32,6 +32,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.lucazanrosso.randomdraws.R
 import com.lucazanrosso.randomdraws.data.AppDatabase
 
 /*enum class Screen(@StringRes val title: Int, val icon: ImageVector) {
@@ -55,9 +56,7 @@ val testScreen = listOf(Screen.NewGroup)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SampleApp(
-    db: AppDatabase
-) {
+fun SampleApp() {
 
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -87,7 +86,8 @@ fun SampleApp(
         NavHost(navController = navController, startDestination = Root.Groups.route, Modifier.padding(innerPadding)) {
             navigation(startDestination = Screen.AllGroups.route, route = Root.Groups.route) {
                 composable(Screen.AllGroups.route) { GroupScreen() }
-                composable(Screen.NewGroup.route) { NewGroupScreen(navController, db) }
+                composable(Screen.NewGroup.route) {
+                    NewGroupScreen(navigateBack = { navController.popBackStack() }) }
             }
             navigation(startDestination = Screen.AllDraws.route, route = Root.Draws.route) {
                 composable(Screen.AllDraws.route) { QuestionScreen() }
