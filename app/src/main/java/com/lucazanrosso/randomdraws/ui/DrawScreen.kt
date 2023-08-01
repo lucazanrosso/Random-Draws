@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun QuestionScreen() {
-    Column() {
+    Column {
         Text(text = "Draws")
 
     }

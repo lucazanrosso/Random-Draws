@@ -17,13 +17,18 @@
 package com.lucazanrosso.randomdraws
 
 import android.app.Application
+import com.lucazanrosso.randomdraws.data.AppDatabase
 
 class RandomDrawsApplication : Application() {
 
     /**
      * AppContainer instance used by the rest of classes to obtain dependencies
      */
-    override fun onCreate() {
-        super.onCreate()
-    }
+    //lateinit var dao: ItemDao
+    val dao by lazy {AppDatabase.getDatabase(applicationContext).itemDao()}
+    //private val dao by lazy {AppDatabase.getDatabase(applicationContext)}
+
+//    override fun onCreate() {
+//        super.onCreate()
+//    }
 }

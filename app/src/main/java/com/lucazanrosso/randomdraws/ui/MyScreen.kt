@@ -15,8 +15,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -25,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -33,12 +30,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.lucazanrosso.randomdraws.R
-import com.lucazanrosso.randomdraws.data.AppDatabase
-
-/*enum class Screen(@StringRes val title: Int, val icon: ImageVector) {
-    Groups(R.string.groups, Icons.Rounded.Home),
-    Draws(R.string.questions, Icons.Rounded.Settings)
-}*/
 
 sealed class Root(val route: String, @StringRes val title: Int, val icon: ImageVector) {
     object Groups : Root("groups", R.string.groups, Icons.Rounded.Home)
@@ -150,42 +141,42 @@ fun FabButtonSample(navController: NavHostController, currentScreen: Screen) {
             )
         }
     }
-    if (currentScreen == Screen.AllGroups) {
-
-    }
+//    if (currentScreen == Screen.AllGroups) {
+//
+//    }
 }
 
-@Composable
-fun NavigationBarSample(navController: NavHostController) {
-    val items = listOf(Root.Groups, Root.Draws)
-
-    NavigationBar {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination
-        items.forEach { screen ->
-            NavigationBarItem(
-                icon = { Icon(screen.icon, contentDescription = stringResource(screen.title)) },
-                label = { Text(stringResource(screen.title)) },
-                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                onClick = {
-                    navController.navigate(screen.route) {
-                        // Pop up to the start destination of the graph to
-                        // avoid building up a large stack of destinations
-                        // on the back stack as users select items
-
-                        popUpTo(0) {// {navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        // Avoid multiple copies of the same destination when
-                        // re selecting the same item
-                        launchSingleTop = true
-                        // Restore state when re selecting a previously selected item
-                        //restoreState = true
-                    }
-
-                }
-
-            )
-        }
-    }
-}
+//@Composable
+//fun NavigationBarSample(navController: NavHostController) {
+//    val items = listOf(Root.Groups, Root.Draws)
+//
+//    NavigationBar {
+//        val navBackStackEntry by navController.currentBackStackEntryAsState()
+//        val currentDestination = navBackStackEntry?.destination
+//        items.forEach { screen ->
+//            NavigationBarItem(
+//                icon = { Icon(screen.icon, contentDescription = stringResource(screen.title)) },
+//                label = { Text(stringResource(screen.title)) },
+//                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+//                onClick = {
+//                    navController.navigate(screen.route) {
+//                        // Pop up to the start destination of the graph to
+//                        // avoid building up a large stack of destinations
+//                        // on the back stack as users select items
+//
+//                        popUpTo(0) {// {navController.graph.findStartDestination().id) {
+//                            saveState = true
+//                        }
+//                        // Avoid multiple copies of the same destination when
+//                        // re selecting the same item
+//                        launchSingleTop = true
+//                        // Restore state when re selecting a previously selected item
+//                        //restoreState = true
+//                    }
+//
+//                }
+//
+//            )
+//        }
+//    }
+//}

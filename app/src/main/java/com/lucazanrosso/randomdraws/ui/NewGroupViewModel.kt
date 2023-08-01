@@ -1,17 +1,13 @@
 package com.lucazanrosso.randomdraws.ui
 
-import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.lucazanrosso.randomdraws.MainActivity
 import com.lucazanrosso.randomdraws.RandomDrawsApplication
-import com.lucazanrosso.randomdraws.data.AppDatabase
 import com.lucazanrosso.randomdraws.data.Item
 import com.lucazanrosso.randomdraws.data.ItemDao
 
@@ -21,7 +17,7 @@ class NewGroupViewModel(
 
     private var progressiveIdForKeys = mutableStateOf(3)
     var group = mutableStateOf("")
-    var list = mutableStateListOf<ItemDetails>(
+    var list = mutableStateListOf(
         ItemDetails(0, ""),
         ItemDetails(1, ""),
         ItemDetails(2, "")
@@ -47,12 +43,11 @@ class NewGroupViewModel(
         }
     }
 
-
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 NewGroupViewModel(
-                    AppDatabase.getDatabase(this[APPLICATION_KEY] as RandomDrawsApplication).itemDao(),
+                    (this[APPLICATION_KEY] as RandomDrawsApplication).dao
                 )
             }
         }

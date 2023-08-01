@@ -27,9 +27,9 @@ import com.lucazanrosso.randomdraws.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewGroupScreen(
+    modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
-    viewModel: NewGroupViewModel = viewModel(factory = NewGroupViewModel.Factory),
-    modifier: Modifier = Modifier
+    viewModel: NewGroupViewModel = viewModel(factory = NewGroupViewModel.Factory)
 ) {
 
     LazyColumn(
