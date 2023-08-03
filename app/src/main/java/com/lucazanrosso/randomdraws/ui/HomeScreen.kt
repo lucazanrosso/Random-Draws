@@ -18,17 +18,17 @@ import com.lucazanrosso.randomdraws.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navigateToNewGroup: () -> Unit
+    navigateToGroups: () -> Unit
 ) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = {Text(text = stringResource(Screen.Home.title) )},
+                title = {Text(text = stringResource(Destination.Home.title) )},
             )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = navigateToNewGroup
+                onClick = navigateToGroups
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Add,

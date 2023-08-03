@@ -1,6 +1,5 @@
 package com.lucazanrosso.randomdraws.ui
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,7 +38,7 @@ fun NewGroupScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = {Text(text = stringResource(Screen.NewGroup.title) )},
+                title = {Text(text = stringResource(Destination.NewGroup.title) )},
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(

@@ -7,27 +7,36 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.lucazanrosso.randomdraws.R
 
-sealed class Screen(val route: String, @StringRes val title: Int) {
-    object Home : Screen("all_draws", R.string.draws)
-    object AllGroups : Screen("all_groups", R.string.groups)
-    object NewGroup : Screen("new_group", R.string.new_group)
-    object DrawsDetails : Screen("draws_detail", R.string.draws)
+sealed class Destination(val route: String, @StringRes val title: Int) {
+    object Home : Destination("home", R.string.draws)
+    object Groups : Destination("groups", R.string.groups)
+    object NewGroup : Destination("new_group", R.string.new_group)
+    object DrawDetail : Destination("draw_detail", R.string.draws)
 }
 
 @Composable
 fun RandomDrawsNavHost(
+
     navController: NavHostController
 ) {
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
-        composable(Screen.Home.route) {
-            HomeScreen(navigateToNewGroup = {navController.navigate(Screen.NewGroup.route)})
+    NavHost(navController = navController, startDestination = Destination.Home.route) {
+        composable(Destination.Home.route) {
+            HomeScreen(
+                navigateToGroups = { navController.navigate(Destination.Groups.route) }
+            )
         }
 
-        composable(Screen.AllGroups.route) {
-            GroupScreen()
+        composable(Destination.Groups.route) {
+            GroupScreen(
+                navigateToNewGroup = { navController.navigate(Destination.NewGroup.route)},
+                navigateBack = { navController.navigateUp() },
+            )
         }
-        composable(Screen.NewGroup.route) {
-            NewGroupScreen(navigateBack = { navController.popBackStack() })
+
+        composable(Destination.NewGroup.route) {
+            NewGroupScreen(navigateBack = {
+                navController.navigateUp() }
+            )
         }
 
     }
