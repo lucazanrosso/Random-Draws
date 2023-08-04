@@ -34,11 +34,17 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lucazanrosso.randomdraws.R
 
+object GroupsDestination : NavigationDestination {
+    override val route = "groups"
+    override val titleRes = R.string.groups
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupScreen(
     navigateToNewGroup: () -> Unit,
     navigateBack: () -> Unit,
+    navigateToGroupDetails: (String) -> Unit,
     viewModel: GroupsViewModel = viewModel(factory = GroupsViewModel.Factory)
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
@@ -46,7 +52,7 @@ fun GroupScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = {Text(text = stringResource(Destination.Groups.title) )},
+                title = {Text(text = stringResource(GroupsDestination.titleRes) )},
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
@@ -66,19 +72,18 @@ fun GroupScreen(
             )
         },
     ) { innerPadding ->
-        LazyColumn(modifier = Modifier.padding(innerPadding)) {
+        LazyColumn(modifier = Modifier.padding(innerPadding).padding(start = 8.dp, end = 8.dp)) {
 //            item {     Button(onClick = {     viewModel.createGroups() }) {
 //
 //            } }
 
             itemsIndexed(items = homeUiState.group, key = {_, listItem ->
                 listItem.hashCode()
-            }) { index, item ->
-                Card(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-
-                    onClick = { /*TODO*/ }) {
+            }) { _, item ->
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    onClick = { navigateToGroupDetails(item.groupName) }
+                ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(modifier = Modifier.padding(8.dp),
                             contentAlignment = Alignment.Center
@@ -95,7 +100,7 @@ fun GroupScreen(
                             Text(text = "Members: " + item.groupCount)
                         }
                         Spacer(modifier = Modifier.weight(1f))
-                        IconButton(onClick = { viewModel.deleteGroup(index) }) {
+                        IconButton(onClick = { viewModel.deleteGroup(item.groupName) }) {
                             Icon (
                                 imageVector = Icons.Filled.Delete,
                                 contentDescription = stringResource(R.string.delete_group)

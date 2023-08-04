@@ -1,17 +1,22 @@
 package com.lucazanrosso.randomdraws.ui
 
-import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.lucazanrosso.randomdraws.R
+import androidx.navigation.navArgument
 
-sealed class Destination(val route: String, @StringRes val title: Int) {
-    object Home : Destination("home", R.string.draws)
-    object Groups : Destination("groups", R.string.groups)
-    object NewGroup : Destination("new_group", R.string.new_group)
-    object DrawDetail : Destination("draw_detail", R.string.draws)
+interface NavigationDestination {
+    /**
+     * Unique name to define the path for a composable
+     */
+    val route: String
+
+    /**
+     * String resource id to that contains title to be displayed for the screen.
+     */
+    val titleRes: Int
 }
 
 @Composable
@@ -19,23 +24,35 @@ fun RandomDrawsNavHost(
 
     navController: NavHostController
 ) {
-    NavHost(navController = navController, startDestination = Destination.Home.route) {
-        composable(Destination.Home.route) {
+    NavHost(navController = navController, startDestination = HomeDestination.route) {
+        composable(HomeDestination.route) {
             HomeScreen(
-                navigateToGroups = { navController.navigate(Destination.Groups.route) }
+                navigateToGroups = { navController.navigate(GroupsDestination.route) }
             )
         }
 
-        composable(Destination.Groups.route) {
+        composable(GroupsDestination.route) {
             GroupScreen(
-                navigateToNewGroup = { navController.navigate(Destination.NewGroup.route)},
+                navigateToNewGroup = { navController.navigate(NewGroupDestination.route)},
                 navigateBack = { navController.navigateUp() },
+                navigateToGroupDetails = { "${GroupDetailsDestination.route}/${it}"}
             )
         }
 
-        composable(Destination.NewGroup.route) {
+        composable(NewGroupDestination.route) {
             NewGroupScreen(navigateBack = {
                 navController.navigateUp() }
+            )
+        }
+
+        composable(
+            route = GroupDetailsDestination.routeWithArgs,
+            arguments = listOf(navArgument(GroupDetailsDestination.itemIdArg) {
+                type = NavType.StringType
+            })
+        ) {
+            GroupDetailsScreen(
+                navigateBack = { navController.navigateUp() }
             )
         }
 

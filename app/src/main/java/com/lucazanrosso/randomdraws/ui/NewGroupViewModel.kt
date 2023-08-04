@@ -5,11 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.lucazanrosso.randomdraws.RandomDrawsApplication
 import com.lucazanrosso.randomdraws.data.Item
 import com.lucazanrosso.randomdraws.data.ItemDao
+import kotlinx.coroutines.launch
 
 class NewGroupViewModel(
     private val dao: ItemDao,
@@ -37,9 +39,11 @@ class NewGroupViewModel(
     }
 
     fun saveListToDb() {
-        list.forEach {
-            if (it.name.isNotEmpty())
-                dao.insert(Item(group = group.value, name = it.name))
+        viewModelScope.launch {
+            list.forEach {
+                if (it.name.isNotEmpty())
+                    dao.insert(Item(group = group.value, name = it.name))
+            }
         }
     }
 
@@ -57,6 +61,6 @@ class NewGroupViewModel(
 
 data class ItemDetails(
     val id: Int = 0,
-//    val group: String = "",
+    val group: String = "",
     var name: String = "",
 )

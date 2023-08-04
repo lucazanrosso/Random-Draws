@@ -13,7 +13,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.lucazanrosso.randomdraws.R
+
+object HomeDestination : NavigationDestination {
+    override val route = "home"
+    override val titleRes = R.string.app_name
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,7 +29,7 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = {Text(text = stringResource(Destination.Home.title) )},
+                title = {Text(text = stringResource(HomeDestination.titleRes) )},
             )
         },
         floatingActionButton = {
@@ -38,9 +44,9 @@ fun HomeScreen(
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding).padding(start = 8.dp, end = 8.dp)
         ) {
-            Text(text = "Draws")
+
         }
     }
 }

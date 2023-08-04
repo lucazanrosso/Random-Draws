@@ -25,8 +25,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lucazanrosso.randomdraws.R
+
+object NewGroupDestination : NavigationDestination {
+    override val route = "new_group"
+    override val titleRes = R.string.new_group
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +44,7 @@ fun NewGroupScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = {Text(text = stringResource(Destination.NewGroup.title) )},
+                title = {Text(text = stringResource(NewGroupDestination.titleRes) )},
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
@@ -62,7 +68,7 @@ fun NewGroupScreen(
         },
     ) { innerPadding ->
         LazyColumn(
-            modifier = modifier.fillMaxWidth().padding(innerPadding)
+            modifier = modifier.fillMaxWidth().padding(innerPadding).padding(start = 16.dp, end = 16.dp)
         ) {
             item {
                 OutlinedTextField(
@@ -83,9 +89,10 @@ fun NewGroupScreen(
                     var text by rememberSaveable { mutableStateOf(item.name) }
                     val label = index + 1
 
-                    IconButton(onClick = {
-                        viewModel.addItemToList(index)
-                    }) {
+                    IconButton(
+                        onClick = { viewModel.addItemToList(index) },
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
                         Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.drag_and_drop))
                     }
 
@@ -99,20 +106,23 @@ fun NewGroupScreen(
                         modifier = Modifier.weight(1f)
                     )
 
-                    IconButton(onClick = { viewModel.removeItem(index) }) {
+                    IconButton(
+                        onClick = { viewModel.removeItem(index) },
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
                         Icon(Icons.Rounded.Clear, contentDescription = stringResource(R.string.drag_and_drop))
                     }
                 }
             }
 
             item {
-                IconButton(onClick = {
-                    viewModel.addItemToList(viewModel.list.size)
-                }) {
+                IconButton(
+                    onClick = { viewModel.addItemToList(viewModel.list.size) },
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
                     Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.drag_and_drop))
                 }
             }
         }
     }
-
 }
