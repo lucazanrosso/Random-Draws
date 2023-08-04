@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
@@ -20,11 +19,11 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +41,8 @@ fun GroupScreen(
     navigateBack: () -> Unit,
     viewModel: GroupsViewModel = viewModel(factory = GroupsViewModel.Factory)
 ) {
+    val homeUiState by viewModel.homeUiState.collectAsState()
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -66,7 +67,11 @@ fun GroupScreen(
         },
     ) { innerPadding ->
         LazyColumn(modifier = Modifier.padding(innerPadding)) {
-            itemsIndexed(items = viewModel.groups, key = {_, listItem ->
+//            item {     Button(onClick = {     viewModel.createGroups() }) {
+//
+//            } }
+
+            itemsIndexed(items = homeUiState.group, key = {_, listItem ->
                 listItem.hashCode()
             }) { index, item ->
                 Card(modifier = Modifier
@@ -82,15 +87,15 @@ fun GroupScreen(
                                 drawCircle(color = Color.White)
 
                             })
-                            Text(text = item.take(2),
+                            Text(text = item.groupName.take(2),
                                 fontSize = 24.sp)
                         }
                         Column {
-                            Text(text = item, fontWeight = FontWeight.Bold)
-                            Text(text = "Members: " + viewModel.count[index])
+                            Text(text = item.groupName, fontWeight = FontWeight.Bold)
+                            Text(text = "Members: " + item.groupCount)
                         }
                         Spacer(modifier = Modifier.weight(1f))
-                        IconButton(onClick = { viewModel.deleteGroup(item, index) }) {
+                        IconButton(onClick = { viewModel.deleteGroup(index) }) {
                             Icon (
                                 imageVector = Icons.Filled.Delete,
                                 contentDescription = stringResource(R.string.delete_group)

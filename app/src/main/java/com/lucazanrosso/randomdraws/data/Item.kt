@@ -11,3 +11,8 @@ data class Item(
     @ColumnInfo(name = "group") val group: String,
     @ColumnInfo(name = "name") val name: String,
 )
+
+data class Group(
+    val groupName: String,
+    val groupCount: Int
+)

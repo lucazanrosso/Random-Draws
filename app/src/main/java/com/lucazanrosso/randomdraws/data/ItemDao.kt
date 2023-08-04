@@ -31,9 +31,14 @@ interface ItemDao {
     fun getAllItems(): List<Item>
 //    fun getAllItems(): Flow<List<Item>>
 
-    @MapInfo(keyColumn = "groupname", valueColumn = "count")
-    @Query("SELECT `group` AS groupname, COUNT(*) AS count from items GROUP BY `group` ORDER BY `group` ASC")
-    fun getGroups(): Map<String, Int>
+//    @MapInfo(keyColumn = "groupname", valueColumn = "count")
+//    @Query("SELECT `group` AS groupname, COUNT(*) AS count from items GROUP BY `group` ORDER BY `group` ASC")
+////    fun getGroups(): Map<String, Int>
+//    fun getGroups(): Flow<Group>
+
+    @Query("SELECT `group` AS groupName, COUNT(*) AS groupCount from items GROUP BY `group` ORDER BY `group` ASC")
+//    fun getGroups(): Map<String, Int>
+    fun getGroups(): Flow<List<Group>>
 
 //    @Query("SELECT * FROM user WHERE region IN (:regions)")
 //    fun loadUsersFromRegions(regions: List<String>): List<User>
