@@ -35,7 +35,7 @@ fun RandomDrawsNavHost(
             GroupScreen(
                 navigateToNewGroup = { navController.navigate(NewGroupDestination.route)},
                 navigateBack = { navController.navigateUp() },
-                navigateToGroupDetails = { "${GroupDetailsDestination.route}/${it}"}
+                navigateToGroupDetails = { navController.navigate("${GroupDetailsDestination.route}/${it}") }
             )
         }
 

@@ -52,7 +52,7 @@ fun GroupDetailsScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = stringResource(NewGroupDestination.titleRes) ) },
+                title = { Text(text = stringResource(GroupDetailsDestination.titleRes) ) },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(

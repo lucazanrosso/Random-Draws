@@ -100,7 +100,9 @@ fun GroupScreen(
                             Text(text = "Members: " + item.groupCount)
                         }
                         Spacer(modifier = Modifier.weight(1f))
-                        IconButton(onClick = { viewModel.deleteGroup(item.groupName) }) {
+                        IconButton(
+                            onClick = { viewModel.deleteGroup(item.groupName) }
+                        ) {
                             Icon (
                                 imageVector = Icons.Filled.Delete,
                                 contentDescription = stringResource(R.string.delete_group)
