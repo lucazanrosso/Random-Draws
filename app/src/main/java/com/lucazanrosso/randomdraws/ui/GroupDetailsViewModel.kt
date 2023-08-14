@@ -1,6 +1,7 @@
 package com.lucazanrosso.randomdraws.ui
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -16,6 +17,7 @@ import com.lucazanrosso.randomdraws.data.ItemDao
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -25,9 +27,13 @@ class GroupDetailsViewModel(
     private val dao: ItemDao,
 ) : ViewModel() {
 
-    private val groupName: String = checkNotNull(savedStateHandle[GroupDetailsDestination.itemIdArg])
+    val groupName: String = checkNotNull(savedStateHandle[GroupDetailsDestination.itemIdArg])
+    var group = mutableStateOf(groupName)
+    var list = mutableStateListOf<ItemDetails>()
 
-    val uiState: StateFlow<GroupDetailsUiState> =
+
+
+    var uiState: StateFlow<GroupDetailsUiState> =
         dao.getGroupDetails(groupName)
             .filterNotNull()
             .map {
@@ -37,6 +43,59 @@ class GroupDetailsViewModel(
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
                 initialValue = GroupDetailsUiState()
             )
+
+
+//    var itemUiState = mutableStateOf(GroupDetailsUiState())
+//        private set
+//    init {
+//        viewModelScope.launch {
+//            itemUiState = dao.getGroupDetails(groupName)
+//                .filterNotNull()
+//
+//        }
+//    }
+
+//    fun updateGroup() {
+//        viewModelScope.launch {
+//            list.forEach {
+//                if (it.name.isNotEmpty())
+//                    dao.insert(Item(group = group.value, name = it.name))
+//            }
+//        }
+//    }
+
+//    private var progressiveIdForKeys = mutableStateOf(3)
+
+    fun updateItem(item: Item, name: String) {
+        viewModelScope.launch {
+            dao.updateName(item.id, name)
+        }
+    }
+
+    fun updateGroup(name: String) {
+        viewModelScope.launch {
+            dao.updateGroup(groupName, name)
+        }
+    }
+
+    fun removeItem(item: Item) {
+        viewModelScope.launch {
+            dao.delete(item)
+        }
+    }
+
+    fun removeVoidItems() {
+        viewModelScope.launch {
+            dao.deleteVoidItems()
+        }
+    }
+
+    fun addItemToList() {
+        viewModelScope.launch {
+            dao.insert(Item(0, groupName, ""))
+        }
+    }
+
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
@@ -53,3 +112,14 @@ class GroupDetailsViewModel(
 }
 
 data class GroupDetailsUiState(val itemList: List<Item> = listOf())
+
+//fun Item.toItemUiState(): ItemUiState = ItemUiState(
+//    itemDetails = this.toItemDetails()
+//)
+
+//fun List<Item>.toItemDetails(): List<ItemDetails> = List<ItemDetails>(
+//
+//    id = id,
+//    name = name,
+//    group = group
+//)

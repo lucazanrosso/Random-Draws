@@ -16,13 +16,22 @@ interface ItemDao {
     @Update
     suspend fun update(item: Item)
 
+    @Query("UPDATE items SET name = :name WHERE id = :id")
+    suspend fun updateName(id: Int, name: String)
+
+    @Query("UPDATE items SET `group` = :newGroup WHERE `group` = :previuosGroup")
+    suspend fun updateGroup(previuosGroup: String, newGroup: String)
+
     @Delete
     suspend fun delete(item: Item)
+
+    @Query("DELETE from items WHERE name = ''")
+    suspend fun deleteVoidItems()
 
     @Query("DELETE from items WHERE `group` = :groupName")
     suspend fun deleteGroup(groupName: String)
 
-    @Query("SELECT * from items WHERE `group` = :groupName")
+    @Query("SELECT * from items WHERE `group` = :groupName ORDER BY name ASC")
     fun getGroupDetails(groupName: String): Flow<List<Item>>
 
     @Query("SELECT * from items ORDER BY name ASC")

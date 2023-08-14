@@ -48,7 +48,7 @@ fun GroupDetailsScreen(
     viewModel: GroupDetailsViewModel = viewModel(factory = GroupDetailsViewModel.Factory)
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -63,7 +63,8 @@ fun GroupDetailsScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-//                        viewModel.saveListToDb()
+                        viewModel.updateGroup(viewModel.group.value)
+                        viewModel.removeVoidItems()
                         navigateBack()
                     }){
                         Icon(
@@ -81,27 +82,55 @@ fun GroupDetailsScreen(
                 .padding(innerPadding)
                 .padding(start = 16.dp, end = 16.dp)
         ) {
-//            item {
-//                OutlinedTextField(
-//                    value = viewModel.group.value,
-//                    label = { Text(text = "Group name") },
-//                    onValueChange = {viewModel.group.value = it },
-//                    modifier = Modifier.fillParentMaxWidth()
-//                )
-//            }
-//
-            items(items = uiState.itemList, key = { it.id }) { item ->
-                Text(text = item.name)
+            item {
+                var text by rememberSaveable { mutableStateOf(viewModel.group.value) }
+                OutlinedTextField(
+                    value = text,
+                    label = { Text(text = "Group name") },
+                    onValueChange = {
+                        text = it
+                        viewModel.group.value = text},
+                    modifier = Modifier.fillParentMaxWidth()
+                )
             }
 //
-//            item {
-//                IconButton(
-//                    onClick = { viewModel.addItemToList(viewModel.list.size) },
-//                    modifier = Modifier.padding(top = 8.dp)
-//                ) {
-//                    Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.drag_and_drop))
-//                }
-//            }
+            itemsIndexed(items = uiState.itemList, key = { _, listItem ->
+                listItem.id }) { index, item ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = modifier.fillMaxWidth()
+                ){
+                    var text by rememberSaveable { mutableStateOf(item.name) }
+                    val label = index + 1
+
+                    OutlinedTextField(
+                        value = text,
+                        label = { Text(text = "$label") },
+                        onValueChange = {
+                            text = it
+                            viewModel.updateItem(item, text)
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    IconButton(
+                        onClick = { viewModel.removeItem(item) },
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
+                        Icon(Icons.Rounded.Clear, contentDescription = stringResource(R.string.drag_and_drop))
+                    }
+                }
+            }
+
+            item {
+                IconButton(
+                    onClick = { viewModel.addItemToList() },
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.drag_and_drop))
+                }
+            }
+
         }
     }
 }
