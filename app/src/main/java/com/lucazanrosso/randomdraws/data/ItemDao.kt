@@ -20,8 +20,8 @@ interface ItemDao {
     @Upsert
     suspend fun upsert(item: Item)
 
-    @Query("UPDATE items SET name = :name WHERE id = :id")
-    suspend fun updateName(id: Int, name: String)
+//    @Query("UPDATE items SET name = :name WHERE id = :id")
+//    suspend fun updateName(id: Int, name: String)
 
     @Query("UPDATE items SET `group` = :newGroup WHERE `group` = :previuosGroup")
     suspend fun updateGroup(previuosGroup: String, newGroup: String)

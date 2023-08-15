@@ -70,7 +70,7 @@ data class ItemUiState(
 data class ItemDetails(
     val id: Int = 0,
     val index: Int = 0,
-    val group: String = "",
+    var group: String = "",
     var name: String = "",
 )
 

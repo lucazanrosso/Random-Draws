@@ -89,12 +89,12 @@ fun NewGroupScreen(
                     var text by rememberSaveable { mutableStateOf(item.name) }
                     val label = index + 1
 
-                    IconButton(
-                        onClick = { viewModel.addItemToList(index) },
-                        modifier = Modifier.padding(top = 8.dp)
-                    ) {
-                        Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.drag_and_drop))
-                    }
+//                    IconButton(
+//                        onClick = { viewModel.addItemToList(index) },
+//                        modifier = Modifier.padding(top = 8.dp)
+//                    ) {
+//                        Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.drag_and_drop))
+//                    }
 
                     OutlinedTextField(
                         value = text,
