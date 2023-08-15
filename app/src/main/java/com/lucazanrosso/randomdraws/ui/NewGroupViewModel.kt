@@ -20,9 +20,9 @@ class NewGroupViewModel(
     private var progressiveIdForKeys = mutableStateOf(3)
     var group = mutableStateOf("")
     var list = mutableStateListOf(
-        ItemDetails(0, ""),
-        ItemDetails(1, ""),
-        ItemDetails(2, "")
+        ItemDetails(0, 0, "", ""),
+        ItemDetails(1, 1, "", ""),
+        ItemDetails(2, 2, "", "")
     )
 
     fun updateItem(index: Int, name: String) {
@@ -30,7 +30,7 @@ class NewGroupViewModel(
     }
 
     fun addItemToList(index: Int) {
-        list.add(index, ItemDetails(progressiveIdForKeys.value, ""))
+        list.add(index, ItemDetails(progressiveIdForKeys.value, name = ""))
         progressiveIdForKeys.value++
     }
 
@@ -69,6 +69,13 @@ data class ItemUiState(
 
 data class ItemDetails(
     val id: Int = 0,
+    val index: Int = 0,
     val group: String = "",
     var name: String = "",
+)
+
+fun ItemDetails.toItem(): Item = Item(
+    id = id,
+    name = name,
+    group = group
 )

@@ -4,6 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +16,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.lucazanrosso.randomdraws.RandomDrawsApplication
 import com.lucazanrosso.randomdraws.data.Item
 import com.lucazanrosso.randomdraws.data.ItemDao
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -45,15 +48,40 @@ class GroupDetailsViewModel(
             )
 
 
-//    var itemUiState = mutableStateOf(GroupDetailsUiState())
+//    var itemUiState = mutableStateListOf<ItemDetails>()
+    var itemUiState = mutableStateListOf<ItemDetails>()
 //        private set
-//    init {
-//        viewModelScope.launch {
-//            itemUiState = dao.getGroupDetails(groupName)
-//                .filterNotNull()
-//
-//        }
+
+    init {
+        viewModelScope.launch {
+            itemUiState = dao.getGroupDetails(groupName)
+                .filterNotNull()
+                .first()
+                .mapIndexed{ index, item -> ItemDetails(item.id, index, item.group, item.name) }
+                .toMutableStateList()
+        }
+    }
+    /* devo creare una funzione che mi crei una nuova lista
+    di itemDetails con un id progressivo come fatto per il NewGroup*/
+
+//    fun Item.toItemUiState(): ItemUiState = ItemUiState(
+//        itemDetails = this.toItemDetails()
+//    )
+
+//    class ItemUiStateFun (index: Int, item: Item) {
+//        val id = index
+//        var name = item.name
+//        var group = item.group
 //    }
+
+//    fun List<Item>.toItemDetails(): List<ItemDetails> = List<ItemDetails>(
+//
+//        id = id,
+//        name = name,
+//        group = group
+//    )
+
+//    val snapshot = SnapshotStateList.fromList(itemUiState)
 
 //    fun updateGroup() {
 //        viewModelScope.launch {
@@ -66,10 +94,8 @@ class GroupDetailsViewModel(
 
 //    private var progressiveIdForKeys = mutableStateOf(3)
 
-    fun updateItem(item: Item, name: String) {
-        viewModelScope.launch {
-            dao.updateName(item.id, name)
-        }
+    fun updateItem(index: Int, name: String) {
+        itemUiState[index].name = name
     }
 
     fun updateGroup(name: String) {
@@ -78,9 +104,21 @@ class GroupDetailsViewModel(
         }
     }
 
-    fun removeItem(item: Item) {
+//    fun removeItem(item: Item) {
+//        viewModelScope.launch {
+//            dao.delete(item)
+//        }
+//    }
+
+    fun removeItem(index : Int) {
+        itemUiState.removeAt(index)
+    }
+
+    fun upsertItems() {
         viewModelScope.launch {
-            dao.delete(item)
+            itemUiState.forEach {
+                dao.upsert(it.toItem())
+            }
         }
     }
 
@@ -90,10 +128,14 @@ class GroupDetailsViewModel(
         }
     }
 
+//    fun addItemToList() {
+//        viewModelScope.launch {
+//            dao.insert(Item(0, groupName, ""))
+//        }
+//    }
+
     fun addItemToList() {
-        viewModelScope.launch {
-            dao.insert(Item(0, groupName, ""))
-        }
+        itemUiState.add(ItemDetails(index = itemUiState[itemUiState.size - 1].id + 1, group = groupName, name = ""))
     }
 
 
@@ -112,14 +154,3 @@ class GroupDetailsViewModel(
 }
 
 data class GroupDetailsUiState(val itemList: List<Item> = listOf())
-
-//fun Item.toItemUiState(): ItemUiState = ItemUiState(
-//    itemDetails = this.toItemDetails()
-//)
-
-//fun List<Item>.toItemDetails(): List<ItemDetails> = List<ItemDetails>(
-//
-//    id = id,
-//    name = name,
-//    group = group
-//)

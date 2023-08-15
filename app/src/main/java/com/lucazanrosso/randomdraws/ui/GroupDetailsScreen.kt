@@ -1,5 +1,6 @@
 package com.lucazanrosso.randomdraws.ui
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,7 +48,11 @@ fun GroupDetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: GroupDetailsViewModel = viewModel(factory = GroupDetailsViewModel.Factory)
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val list = viewModel.itemUiState
+
+    list.forEach{
+        println("${it.index} ${it.name}")
+    }
 
     Scaffold(
         topBar = {
@@ -64,6 +69,7 @@ fun GroupDetailsScreen(
                 actions = {
                     IconButton(onClick = {
                         viewModel.updateGroup(viewModel.group.value)
+                        viewModel.upsertItems()
                         viewModel.removeVoidItems()
                         navigateBack()
                     }){
@@ -94,8 +100,8 @@ fun GroupDetailsScreen(
                 )
             }
 //
-            itemsIndexed(items = uiState.itemList, key = { _, listItem ->
-                listItem.id }) { index, item ->
+            itemsIndexed(items = list, key = { _, listItem ->
+                listItem.index }) { index, item ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = modifier.fillMaxWidth()
@@ -108,13 +114,13 @@ fun GroupDetailsScreen(
                         label = { Text(text = "$label") },
                         onValueChange = {
                             text = it
-                            viewModel.updateItem(item, text)
+                            viewModel.updateItem(index, text)
                         },
                         modifier = Modifier.weight(1f)
                     )
 
                     IconButton(
-                        onClick = { viewModel.removeItem(item) },
+                        onClick = { viewModel.removeItem(index) },
                         modifier = Modifier.padding(top = 8.dp)
                     ) {
                         Icon(Icons.Rounded.Clear, contentDescription = stringResource(R.string.drag_and_drop))
@@ -134,3 +140,102 @@ fun GroupDetailsScreen(
         }
     }
 }
+
+
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun GroupDetailsScreen(
+//    navigateBack: () -> Unit,
+//    modifier: Modifier = Modifier,
+//    viewModel: GroupDetailsViewModel = viewModel(factory = GroupDetailsViewModel.Factory)
+//) {
+//    val uiState by viewModel.uiState.collectAsState()
+//    val list = viewModel.itemUiState
+//
+//    list.forEach{println("${it.name}")}
+//
+//    Scaffold(
+//        topBar = {
+//            CenterAlignedTopAppBar(
+//                title = { Text(text = stringResource(GroupDetailsDestination.titleRes) ) },
+//                navigationIcon = {
+//                    IconButton(onClick = navigateBack) {
+//                        Icon(
+//                            imageVector = Icons.Filled.ArrowBack,
+//                            contentDescription = stringResource(R.string.back_button)
+//                        )
+//                    }
+//                },
+//                actions = {
+//                    IconButton(onClick = {
+//                        viewModel.updateGroup(viewModel.group.value)
+//                        viewModel.removeVoidItems()
+//                        navigateBack()
+//                    }){
+//                        Icon(
+//                            imageVector = Icons.Rounded.Done,
+//                            contentDescription = "Localized description"
+//                        )
+//                    }
+//                }
+//            )
+//        },
+//    ) { innerPadding ->
+//        LazyColumn(
+//            modifier = modifier
+//                .fillMaxWidth()
+//                .padding(innerPadding)
+//                .padding(start = 16.dp, end = 16.dp)
+//        ) {
+//            item {
+//                var text by rememberSaveable { mutableStateOf(viewModel.group.value) }
+//                OutlinedTextField(
+//                    value = text,
+//                    label = { Text(text = "Group name") },
+//                    onValueChange = {
+//                        text = it
+//                        viewModel.group.value = text},
+//                    modifier = Modifier.fillParentMaxWidth()
+//                )
+//            }
+////
+//            itemsIndexed(items = uiState.itemList, key = { _, listItem ->
+//                listItem.id }) { index, item ->
+//                Row(
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    modifier = modifier.fillMaxWidth()
+//                ){
+//                    var text by rememberSaveable { mutableStateOf(item.name) }
+//                    val label = index + 1
+//
+//                    OutlinedTextField(
+//                        value = text,
+//                        label = { Text(text = "$label") },
+//                        onValueChange = {
+//                            text = it
+//                            viewModel.updateItem(item, text)
+//                        },
+//                        modifier = Modifier.weight(1f)
+//                    )
+//
+//                    IconButton(
+//                        onClick = { viewModel.removeItem(item) },
+//                        modifier = Modifier.padding(top = 8.dp)
+//                    ) {
+//                        Icon(Icons.Rounded.Clear, contentDescription = stringResource(R.string.drag_and_drop))
+//                    }
+//                }
+//            }
+//
+//            item {
+//                IconButton(
+//                    onClick = { viewModel.addItemToList() },
+//                    modifier = Modifier.padding(top = 8.dp)
+//                ) {
+//                    Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.drag_and_drop))
+//                }
+//            }
+//
+//        }
+//    }
+//}

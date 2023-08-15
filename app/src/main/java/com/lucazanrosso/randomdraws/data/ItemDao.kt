@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,6 +16,9 @@ interface ItemDao {
 
     @Update
     suspend fun update(item: Item)
+
+    @Upsert
+    suspend fun upsert(item: Item)
 
     @Query("UPDATE items SET name = :name WHERE id = :id")
     suspend fun updateName(id: Int, name: String)
