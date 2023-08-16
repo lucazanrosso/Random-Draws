@@ -14,14 +14,9 @@ import com.lucazanrosso.randomdraws.data.Group
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.launch
 
-class GroupsViewModel (
+class HomeViewModel (
     private val dao: ItemDao,
 ) : ViewModel() {
-
-    fun deleteGroup (groupName: String) { viewModelScope.launch {
-            dao.deleteGroup(groupName)
-        }
-    }
 
     val homeUiState: StateFlow<HomeUiState> =
         dao.getGroups().map { HomeUiState(it) }
@@ -31,11 +26,24 @@ class GroupsViewModel (
                 initialValue = HomeUiState()
             )
 
+    fun duplicateGroup(groupName: String) {
+        viewModelScope.launch {
+            dao.duplicateGroup(groupName, "$groupName-2" )
+        }
+    }
+
+
+    fun deleteGroup (groupName: String) {
+        viewModelScope.launch {
+            dao.deleteGroup(groupName)
+        }
+    }
+
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                GroupsViewModel(
+                HomeViewModel(
                     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as RandomDrawsApplication).dao
                 )
             }
@@ -43,4 +51,4 @@ class GroupsViewModel (
     }
 }
 
-data class HomeUiState(val group: List<Group> = listOf()) {}
+data class HomeUiState(val group: List<Group> = listOf())

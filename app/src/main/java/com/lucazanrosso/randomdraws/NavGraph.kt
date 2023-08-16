@@ -1,4 +1,4 @@
-package com.lucazanrosso.randomdraws.ui
+package com.lucazanrosso.randomdraws
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -6,6 +6,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.lucazanrosso.randomdraws.ui.GroupDetailsDestination
+import com.lucazanrosso.randomdraws.ui.GroupDetailsScreen
+import com.lucazanrosso.randomdraws.ui.HomeDestination
+import com.lucazanrosso.randomdraws.ui.HomeScreen
+import com.lucazanrosso.randomdraws.ui.NewGroupDestination
+import com.lucazanrosso.randomdraws.ui.NewGroupScreen
 
 interface NavigationDestination {
     /**
@@ -27,14 +33,7 @@ fun RandomDrawsNavHost(
     NavHost(navController = navController, startDestination = HomeDestination.route) {
         composable(HomeDestination.route) {
             HomeScreen(
-                navigateToGroups = { navController.navigate(GroupsDestination.route) }
-            )
-        }
-
-        composable(GroupsDestination.route) {
-            GroupScreen(
                 navigateToNewGroup = { navController.navigate(NewGroupDestination.route)},
-                navigateBack = { navController.navigateUp() },
                 navigateToGroupDetails = { navController.navigate("${GroupDetailsDestination.route}/${it}") }
             )
         }

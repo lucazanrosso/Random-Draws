@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lucazanrosso.randomdraws.NavigationDestination
 import com.lucazanrosso.randomdraws.R
 
 object GroupDetailsDestination : NavigationDestination {
@@ -41,15 +42,8 @@ object GroupDetailsDestination : NavigationDestination {
 fun GroupDetailsScreen(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: GroupDetailsViewModel = viewModel(factory = GroupDetailsViewModel.Factory)
+    viewModel: EditGroupViewModel = viewModel(factory = EditGroupViewModel.Factory)
 ) {
-    val list = viewModel.itemUiState
-
-    list.forEach{
-        println("${it.index} ${it.name}")
-    }
-    println("${viewModel.groupName} ${viewModel.newGroupName}")
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -84,19 +78,18 @@ fun GroupDetailsScreen(
                 .padding(start = 16.dp, end = 16.dp)
         ) {
             item {
-                var text by rememberSaveable { mutableStateOf(viewModel.newGroupName) }
                 OutlinedTextField(
-                    value = text,
+                    value = viewModel.newGroupName,
                     label = { Text(text = "Group name") },
-                    onValueChange = {
-                        text = it
-                        viewModel.newGroupName = text},
+                    onValueChange = { viewModel.newGroupName = it},
                     modifier = Modifier.fillParentMaxWidth()
                 )
             }
 
-            itemsIndexed(items = list, key = { _, listItem ->
-                listItem.index }) { index, item ->
+            itemsIndexed(
+                items = viewModel.itemUiState,
+                key = { _, listItem -> listItem.index })
+            { index, item ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = modifier.fillMaxWidth()

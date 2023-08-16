@@ -18,17 +18,16 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class GroupDetailsViewModel(
+class EditGroupViewModel(
     savedStateHandle: SavedStateHandle,
     private val dao: ItemDao,
 ) : ViewModel() {
 
-    val groupName: String = checkNotNull(savedStateHandle[GroupDetailsDestination.itemIdArg])
+    private val groupName: String = checkNotNull(savedStateHandle[GroupDetailsDestination.itemIdArg])
     var newGroupName by mutableStateOf(groupName)
     var itemUiState = mutableStateListOf<ItemDetails>()
-    var itemsToDelete = mutableStateListOf<ItemDetails>()
-    var progressiveIdForKeys = mutableStateOf(0)
-        private set
+    private var itemsToDelete = mutableStateListOf<ItemDetails>()
+    private var progressiveIdForKeys = mutableStateOf(0)
 
     init {
         viewModelScope.launch {
@@ -73,10 +72,9 @@ class GroupDetailsViewModel(
     }
 
     companion object {
-        private const val TIMEOUT_MILLIS = 5_000L
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                GroupDetailsViewModel(
+                EditGroupViewModel(
                     createSavedStateHandle(),
                     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as RandomDrawsApplication).dao
                 )

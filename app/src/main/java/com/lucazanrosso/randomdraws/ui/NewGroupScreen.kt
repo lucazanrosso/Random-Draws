@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lucazanrosso.randomdraws.NavigationDestination
 import com.lucazanrosso.randomdraws.R
 
 object NewGroupDestination : NavigationDestination {
@@ -68,33 +69,30 @@ fun NewGroupScreen(
         },
     ) { innerPadding ->
         LazyColumn(
-            modifier = modifier.fillMaxWidth().padding(innerPadding).padding(start = 16.dp, end = 16.dp)
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(innerPadding)
+                .padding(start = 16.dp, end = 16.dp)
         ) {
             item {
                 OutlinedTextField(
                     value = viewModel.group.value,
                     label = { Text(text = "Group name") },
-                    onValueChange = {viewModel.group.value = it },
+                    onValueChange = { viewModel.group.value = it },
                     modifier = Modifier.fillParentMaxWidth()
                 )
             }
 
-            itemsIndexed(items = viewModel.list, key = {_, listItem ->
-                listItem.id
-            }) { index, item ->
+            itemsIndexed(
+                items = viewModel.list,
+                key = {_, listItem -> listItem.id })
+            { index, item ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = modifier.fillMaxWidth()
                 ){
                     var text by rememberSaveable { mutableStateOf(item.name) }
                     val label = index + 1
-
-//                    IconButton(
-//                        onClick = { viewModel.addItemToList(index) },
-//                        modifier = Modifier.padding(top = 8.dp)
-//                    ) {
-//                        Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.drag_and_drop))
-//                    }
 
                     OutlinedTextField(
                         value = text,
@@ -107,7 +105,7 @@ fun NewGroupScreen(
                     )
 
                     IconButton(
-                        onClick = { viewModel.removeItem(index) },
+                        onClick = { viewModel.removeItem(item) },
                         modifier = Modifier.padding(top = 8.dp)
                     ) {
                         Icon(Icons.Rounded.Clear, contentDescription = stringResource(R.string.drag_and_drop))

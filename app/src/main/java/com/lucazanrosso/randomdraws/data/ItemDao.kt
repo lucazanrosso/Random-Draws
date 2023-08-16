@@ -20,28 +20,26 @@ interface ItemDao {
     @Upsert
     suspend fun upsert(item: Item)
 
-//    @Query("UPDATE items SET name = :name WHERE id = :id")
-//    suspend fun updateName(id: Int, name: String)
-
-    @Query("UPDATE items SET `group` = :newGroup WHERE `group` = :previuosGroup")
-    suspend fun updateGroup(previuosGroup: String, newGroup: String)
-
     @Delete
     suspend fun delete(item: Item)
 
-    @Query("DELETE from items WHERE name = ''")
-    suspend fun deleteVoidItems()
+//    @Query("SELECT * from items ORDER BY name ASC")
+//    fun getAllItems(): Flow<List<Item>>
 
-    @Query("DELETE from items WHERE `group` = :groupName")
-    suspend fun deleteGroup(groupName: String)
+    @Query("INSERT INTO items (`group`, name)" +
+            "SELECT :newGroupName, name " +
+            "from items " +
+            "WHERE `group` = :groupName")
+    suspend fun duplicateGroup(groupName: String, newGroupName: String)
+
+    @Query("SELECT `group` AS groupName, COUNT(*) AS groupCount from items GROUP BY `group` ORDER BY `group` ASC")
+    fun getGroups(): Flow<List<Group>>
 
     @Query("SELECT * from items WHERE `group` = :groupName ORDER BY name ASC")
     fun getGroupDetails(groupName: String): Flow<List<Item>>
 
-    @Query("SELECT * from items ORDER BY name ASC")
-    fun getAllItems(): Flow<List<Item>>
+    @Query("DELETE from items WHERE `group` = :groupName")
+    suspend fun deleteGroup(groupName: String)
 
-    @Query("SELECT `group` AS groupName, COUNT(*) AS groupCount from items GROUP BY `group` ORDER BY `group` ASC")
-    fun getGroups(): Flow<List<Group>>
 
 }

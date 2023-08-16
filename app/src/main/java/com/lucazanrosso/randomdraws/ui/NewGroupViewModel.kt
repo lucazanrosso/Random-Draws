@@ -34,8 +34,8 @@ class NewGroupViewModel(
         progressiveIdForKeys.value++
     }
 
-    fun removeItem(index : Int) {
-        list.removeAt(index)
+    fun removeItem(item: ItemDetails) {
+        list.remove(item)
     }
 
     fun saveListToDb() {
@@ -58,14 +58,6 @@ class NewGroupViewModel(
     }
 
 }
-
-/**
- * Represents Ui State for an Item.
- */
-data class ItemUiState(
-    val itemDetails: ItemDetails = ItemDetails(),
-    val isEntryValid: Boolean = false
-)
 
 data class ItemDetails(
     val id: Int = 0,

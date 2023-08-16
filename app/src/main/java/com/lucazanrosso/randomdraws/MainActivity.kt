@@ -8,7 +8,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.lucazanrosso.randomdraws.ui.RandomDrawsNavHost
 import com.lucazanrosso.randomdraws.ui.theme.RandomDrawsTheme
 
 class MainActivity : ComponentActivity() {
