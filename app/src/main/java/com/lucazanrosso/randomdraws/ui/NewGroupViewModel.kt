@@ -42,7 +42,7 @@ class NewGroupViewModel(
         viewModelScope.launch {
             list.forEach {
                 if (it.name.isNotEmpty())
-                    dao.insert(Item(group = group.value, name = it.name))
+                    dao.insert(Item(group = group.value, name = it.name, extracted = false))
             }
         }
     }
@@ -64,10 +64,12 @@ data class ItemDetails(
     val index: Int = 0,
     var group: String = "",
     var name: String = "",
+    var extracted: Boolean = false
 )
 
 fun ItemDetails.toItem(): Item = Item(
     id = id,
     name = name,
-    group = group
+    group = group,
+    extracted = extracted
 )

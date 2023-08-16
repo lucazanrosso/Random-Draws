@@ -1,6 +1,8 @@
 package com.lucazanrosso.randomdraws.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -72,15 +74,22 @@ fun NewGroupScreen(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(start = 8.dp, end = 8.dp)
         ) {
             item {
-                OutlinedTextField(
-                    value = viewModel.group.value,
-                    label = { Text(text = "Group name") },
-                    onValueChange = { viewModel.group.value = it },
-                    modifier = Modifier.fillParentMaxWidth()
-                )
+                Row(
+                    modifier = modifier.fillMaxWidth()
+                ) {
+                    Spacer(modifier = Modifier.padding(24.dp))
+                    OutlinedTextField(
+                        value = viewModel.group.value,
+                        label = { Text(text = "Group name") },
+                        onValueChange = { viewModel.group.value = it },
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(modifier = Modifier.padding(24.dp))
+                }
+
             }
 
             itemsIndexed(
@@ -94,6 +103,7 @@ fun NewGroupScreen(
                     var text by rememberSaveable { mutableStateOf(item.name) }
                     val label = index + 1
 
+                    Spacer(modifier = Modifier.padding(24.dp))
                     OutlinedTextField(
                         value = text,
                         label = { Text(text = "$label") },
@@ -114,12 +124,19 @@ fun NewGroupScreen(
             }
 
             item {
-                IconButton(
-                    onClick = { viewModel.addItemToList(viewModel.list.size) },
-                    modifier = Modifier.padding(top = 8.dp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = modifier.fillMaxWidth()
                 ) {
-                    Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.drag_and_drop))
+                    IconButton(
+                        onClick = { viewModel.addItemToList(viewModel.list.size) },
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
+                        Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.drag_and_drop))
+                    }
                 }
+
             }
         }
     }

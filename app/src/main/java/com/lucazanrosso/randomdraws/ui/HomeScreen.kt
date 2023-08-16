@@ -49,7 +49,8 @@ object HomeDestination : NavigationDestination {
 @Composable
 fun HomeScreen(
     navigateToNewGroup: () -> Unit,
-    navigateToGroupDetails: (String) -> Unit,
+    navigateToDraw: (String) -> Unit,
+    navigateToEditGroup: (String) -> Unit,
     viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
@@ -75,32 +76,40 @@ fun HomeScreen(
             .padding(innerPadding)
             .padding(start = 8.dp, end = 8.dp)) {
 
-            itemsIndexed(items = homeUiState.group, key = {_, listItem ->
-                listItem.hashCode()
+            itemsIndexed(
+                items = homeUiState.group,
+                key = {_, listItem -> listItem.hashCode()
             }) { _, item ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
+                        .padding(8.dp),
+                    onClick = { navigateToDraw(item.groupName) }
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(8.dp)
+                    ) {
 
                         var displayMenu by remember { mutableStateOf(false) }
 
                         Box(modifier = Modifier.padding(8.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            val color = MaterialTheme.colorScheme.tertiaryContainer
+                            val color = MaterialTheme.colorScheme.secondary
                             Canvas(modifier = Modifier.size(48.dp), onDraw = {
                                 drawCircle(color = color)
-
                             })
                             Text(text = item.groupName.take(2),
-                                fontSize = 24.sp)
+                                fontSize = 24.sp,
+                                color = MaterialTheme.colorScheme.secondaryContainer)
                         }
-                        Column {
+                        Column(
+                            modifier = Modifier.padding(8.dp)
+                        ) {
                             Text(text = item.groupName, fontWeight = FontWeight.Bold)
-                            Text(text = "Members: " + item.groupCount)
+                            Text(text = "Members: " + item.groupCount /*+ ", to be drawn:  " + item.toBeDrawn*/)
+                            Text(text = "To be drawn:  " + item.toBeDrawn)
                         }
                         Spacer(modifier = Modifier.weight(1f))
                         Box {
@@ -118,7 +127,7 @@ fun HomeScreen(
                                 onDismissRequest = { displayMenu = false }
                             ) {
                                 DropdownMenuItem(text = { Text(text = "Duplicate") }, onClick = { viewModel.duplicateGroup(item.groupName) })
-                                DropdownMenuItem(text = { Text(text = "Edit") }, onClick = { navigateToGroupDetails(item.groupName) })
+                                DropdownMenuItem(text = { Text(text = "Edit") }, onClick = { navigateToEditGroup(item.groupName) })
                                 DropdownMenuItem(text = { Text(text = "Delete") }, onClick = { viewModel.deleteGroup(item.groupName) })
                             }
                         }

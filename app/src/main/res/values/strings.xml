@@ -6,5 +6,8 @@
     <string name="new_group">New group</string>
     <string name="drag_and_drop">Drag and Drop</string>
     <string name="delete_group">Delete Group</string>
-    <string name="group_details">Group Details</string>
+    <string name="edit_group">Edit Group</string>
+    <string name="draw">Draw</string>
+    <string name="reset_draw">Reset Draw</string>
+    <string name="done">Done</string>
 </resources>

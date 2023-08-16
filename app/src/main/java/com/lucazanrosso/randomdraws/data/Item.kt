@@ -10,9 +10,11 @@ data class Item(
     @ColumnInfo(name = "id") val id: Int = 0,
     @ColumnInfo(name = "group") val group: String,
     @ColumnInfo(name = "name") var name: String,
+    @ColumnInfo(name = "extracted") var extracted: Boolean,
 )
 
 data class Group(
     val groupName: String,
-    val groupCount: Int
+    val groupCount: Int,
+    val toBeDrawn: Int
 )

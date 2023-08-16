@@ -26,17 +26,23 @@ interface ItemDao {
 //    @Query("SELECT * from items ORDER BY name ASC")
 //    fun getAllItems(): Flow<List<Item>>
 
-    @Query("INSERT INTO items (`group`, name)" +
-            "SELECT :newGroupName, name " +
+    @Query("INSERT INTO items (`group`, name, extracted)" +
+            "SELECT :newGroupName, name, extracted " +
             "from items " +
             "WHERE `group` = :groupName")
     suspend fun duplicateGroup(groupName: String, newGroupName: String)
 
-    @Query("SELECT `group` AS groupName, COUNT(*) AS groupCount from items GROUP BY `group` ORDER BY `group` ASC")
+    @Query("SELECT `group` AS groupName, COUNT(*) AS groupCount, SUM(items.extracted = '0') AS toBeDrawn from items GROUP BY `group` ORDER BY `group` ASC")
     fun getGroups(): Flow<List<Group>>
 
     @Query("SELECT * from items WHERE `group` = :groupName ORDER BY name ASC")
     fun getGroupDetails(groupName: String): Flow<List<Item>>
+
+    @Query("SELECT * from items WHERE `group` = :groupName AND extracted = 0 ORDER BY name ASC")
+    fun getNotExtractedMembers(groupName: String): Flow<List<Item>>
+
+    @Query("SELECT * from items WHERE `group` = :groupName AND extracted = 1 ORDER BY name ASC")
+    fun getExtractedMembers(groupName: String): Flow<List<Item>>
 
     @Query("DELETE from items WHERE `group` = :groupName")
     suspend fun deleteGroup(groupName: String)

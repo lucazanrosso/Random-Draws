@@ -6,8 +6,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.lucazanrosso.randomdraws.ui.GroupDetailsDestination
-import com.lucazanrosso.randomdraws.ui.GroupDetailsScreen
+import com.lucazanrosso.randomdraws.ui.DrawDestination
+import com.lucazanrosso.randomdraws.ui.DrawScreen
+import com.lucazanrosso.randomdraws.ui.EditGroupDestination
+import com.lucazanrosso.randomdraws.ui.EditGroupScreen
 import com.lucazanrosso.randomdraws.ui.HomeDestination
 import com.lucazanrosso.randomdraws.ui.HomeScreen
 import com.lucazanrosso.randomdraws.ui.NewGroupDestination
@@ -34,7 +36,8 @@ fun RandomDrawsNavHost(
         composable(HomeDestination.route) {
             HomeScreen(
                 navigateToNewGroup = { navController.navigate(NewGroupDestination.route)},
-                navigateToGroupDetails = { navController.navigate("${GroupDetailsDestination.route}/${it}") }
+                navigateToDraw = { navController.navigate("${DrawDestination.route}/${it}") },
+                navigateToEditGroup = { navController.navigate("${EditGroupDestination.route}/${it}") }
             )
         }
 
@@ -45,12 +48,23 @@ fun RandomDrawsNavHost(
         }
 
         composable(
-            route = GroupDetailsDestination.routeWithArgs,
-            arguments = listOf(navArgument(GroupDetailsDestination.itemIdArg) {
+            route = DrawDestination.routeWithArgs,
+            arguments = listOf(navArgument(DrawDestination.itemIdArg) {
                 type = NavType.StringType
             })
         ) {
-            GroupDetailsScreen(
+            DrawScreen(
+                navigateBack = { navController.navigateUp() }
+            )
+        }
+
+        composable(
+            route = EditGroupDestination.routeWithArgs,
+            arguments = listOf(navArgument(EditGroupDestination.itemIdArg) {
+                type = NavType.StringType
+            })
+        ) {
+            EditGroupScreen(
                 navigateBack = { navController.navigateUp() }
             )
         }

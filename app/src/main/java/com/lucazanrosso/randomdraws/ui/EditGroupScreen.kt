@@ -30,16 +30,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lucazanrosso.randomdraws.NavigationDestination
 import com.lucazanrosso.randomdraws.R
 
-object GroupDetailsDestination : NavigationDestination {
+object EditGroupDestination : NavigationDestination {
     override val route = "group_details"
-    override val titleRes = R.string.group_details
+    override val titleRes = R.string.edit_group
     const val itemIdArg = "itemId"
     val routeWithArgs = "$route/{$itemIdArg}"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupDetailsScreen(
+fun EditGroupScreen(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: EditGroupViewModel = viewModel(factory = EditGroupViewModel.Factory)
@@ -47,7 +47,7 @@ fun GroupDetailsScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = stringResource(GroupDetailsDestination.titleRes) ) },
+                title = { Text(text = stringResource(EditGroupDestination.titleRes) ) },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(

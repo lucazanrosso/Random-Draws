@@ -23,7 +23,7 @@ class EditGroupViewModel(
     private val dao: ItemDao,
 ) : ViewModel() {
 
-    private val groupName: String = checkNotNull(savedStateHandle[GroupDetailsDestination.itemIdArg])
+    private val groupName: String = checkNotNull(savedStateHandle[EditGroupDestination.itemIdArg])
     var newGroupName by mutableStateOf(groupName)
     var itemUiState = mutableStateListOf<ItemDetails>()
     private var itemsToDelete = mutableStateListOf<ItemDetails>()
