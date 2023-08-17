@@ -1,7 +1,9 @@
 package com.lucazanrosso.randomdraws.ui
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -24,18 +26,36 @@ class NewGroupViewModel(
         ItemDetails(1, 1, "", ""),
         ItemDetails(2, 2, "", "")
     )
+    var isValid by mutableStateOf(false)
+
+    private fun validateInput () {
+        if (group.value.isEmpty()) isValid = false
+        if (list.isEmpty()) isValid = false
+        list.forEach {
+            if (it.name.isEmpty()) isValid = false
+        }
+        isValid = true
+    }
+
+    fun updateGroupName(groupName: String) {
+        group.value = groupName
+        validateInput()
+    }
 
     fun updateItem(index: Int, name: String) {
         list[index].name = name
+        validateInput()
     }
 
     fun addItemToList(index: Int) {
         list.add(index, ItemDetails(progressiveIdForKeys.value, name = ""))
         progressiveIdForKeys.value++
+        validateInput()
     }
 
     fun removeItem(item: ItemDetails) {
         list.remove(item)
+        validateInput()
     }
 
     fun saveListToDb() {

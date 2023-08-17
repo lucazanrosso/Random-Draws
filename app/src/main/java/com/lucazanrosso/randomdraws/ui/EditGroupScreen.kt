@@ -69,7 +69,7 @@ fun EditGroupScreen(
                             viewModel.deleteItemsFromDb()
                             navigateBack()
                         },
-                        enabled = viewModel.newGroupName.isNotEmpty()
+                        enabled = viewModel.isValid
                     ){
                         Icon(
                             imageVector = Icons.Rounded.Done,
@@ -90,14 +90,14 @@ fun EditGroupScreen(
                 OutlinedTextField(
                     value = viewModel.newGroupName,
                     label = { Text(text = "Group name") },
-                    onValueChange = { viewModel.newGroupName = it},
+                    onValueChange = { viewModel.updateGroupName(it) },
                     keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                     modifier = Modifier.fillParentMaxWidth().padding(4.dp)
                 )
             }
 
             itemsIndexed(
-                items = viewModel.itemUiState,
+                items = viewModel.list,
                 key = { _, listItem -> listItem.index })
             { index, item ->
                 Box(
@@ -149,7 +149,7 @@ fun EditGroupScreen(
                     modifier = modifier.fillMaxWidth()
                 ) {
                     IconButton(
-                        onClick = { viewModel.addItemToList(viewModel.itemUiState.size) },
+                        onClick = { viewModel.addItemToList(viewModel.list.size) },
                         modifier = Modifier.padding(top = 8.dp)
                     ) {
                         Icon(

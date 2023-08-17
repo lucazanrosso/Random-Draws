@@ -25,33 +25,51 @@ class EditGroupViewModel(
 
     private val groupName: String = checkNotNull(savedStateHandle[EditGroupDestination.itemIdArg])
     var newGroupName by mutableStateOf(groupName)
-    var itemUiState = mutableStateListOf<ItemDetails>()
+    var list = mutableStateListOf<ItemDetails>()
     private var itemsToDelete = mutableStateListOf<ItemDetails>()
     private var progressiveIdForKeys = mutableStateOf(0)
+    var isValid by mutableStateOf(true)
 
     init {
         viewModelScope.launch {
-            itemUiState = dao.getGroupDetails(groupName)
+            list = dao.getGroupDetails(groupName)
                 .filterNotNull()
                 .first()
                 .mapIndexed{ index, item -> ItemDetails(item.id, index, item.group, item.name) }
                 .toMutableStateList()
-            progressiveIdForKeys.value = itemUiState.size
+            progressiveIdForKeys.value = list.size
         }
     }
 
+    private fun validateInput () {
+        if (newGroupName.isEmpty()) isValid = false
+        if (list.isEmpty()) isValid = false
+        list.forEach {
+            if (it.name.isEmpty()) isValid = false
+        }
+        isValid = true
+    }
+
+    fun updateGroupName(groupName: String) {
+        newGroupName = groupName
+        validateInput()
+    }
+
     fun addItemToList(index: Int) {
-        itemUiState.add(index, ItemDetails(index = progressiveIdForKeys.value, group = groupName, name = ""))
+        list.add(index, ItemDetails(index = progressiveIdForKeys.value, group = groupName, name = ""))
         progressiveIdForKeys.value++
+        validateInput()
     }
 
     fun updateItem(index: Int, name: String) {
-        itemUiState[index].name = name
+        list[index].name = name
+        validateInput()
     }
 
     fun deleteItem(item: ItemDetails) {
-        itemUiState.remove(item)
+        list.remove(item)
         itemsToDelete.add(item)
+        validateInput()
     }
 
     fun deleteItemsFromDb() {
@@ -64,7 +82,7 @@ class EditGroupViewModel(
 
     fun upsertItems() {
         viewModelScope.launch {
-            itemUiState.forEach {
+            list.forEach {
                 it.group = newGroupName
                 dao.upsert(it.toItem())
             }

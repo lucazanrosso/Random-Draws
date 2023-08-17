@@ -66,7 +66,7 @@ fun NewGroupScreen(
                             viewModel.saveListToDb()
                             navigateBack()
                         },
-                        enabled = viewModel.group.value.isNotEmpty()
+                        enabled = viewModel.isValid
                     ){
                         Icon(
                             imageVector = Icons.Rounded.Done,
@@ -87,7 +87,7 @@ fun NewGroupScreen(
                     OutlinedTextField(
                         value = viewModel.group.value,
                         label = { Text(text = "Group name") },
-                        onValueChange = { viewModel.group.value = it },
+                        onValueChange = { viewModel.updateGroupName(it) },
                         keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                         modifier = Modifier.fillMaxWidth().padding(4.dp)
                     )
