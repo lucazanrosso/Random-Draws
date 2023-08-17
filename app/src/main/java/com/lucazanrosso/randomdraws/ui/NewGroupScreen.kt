@@ -1,12 +1,14 @@
 package com.lucazanrosso.randomdraws.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.rounded.Add
@@ -26,7 +28,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lucazanrosso.randomdraws.NavigationDestination
@@ -57,13 +61,16 @@ fun NewGroupScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        viewModel.saveListToDb()
-                        navigateBack()
-                    }){
+                    IconButton(
+                        onClick = {
+                            viewModel.saveListToDb()
+                            navigateBack()
+                        },
+                        enabled = viewModel.group.value.isNotEmpty()
+                    ){
                         Icon(
                             imageVector = Icons.Rounded.Done,
-                            contentDescription = "Localized description"
+                            contentDescription = "Localized description",
                         )
                     }
                 }
@@ -74,36 +81,29 @@ fun NewGroupScreen(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
-                .padding(start = 8.dp, end = 8.dp)
+                .padding(start = 12.dp, end = 12.dp)
         ) {
             item {
-                Row(
-                    modifier = modifier.fillMaxWidth()
-                ) {
-                    Spacer(modifier = Modifier.padding(24.dp))
                     OutlinedTextField(
                         value = viewModel.group.value,
                         label = { Text(text = "Group name") },
                         onValueChange = { viewModel.group.value = it },
-                        modifier = Modifier.weight(1f)
+                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                        modifier = Modifier.fillMaxWidth().padding(4.dp)
                     )
-                    Spacer(modifier = Modifier.padding(24.dp))
-                }
-
             }
 
             itemsIndexed(
                 items = viewModel.list,
                 key = {_, listItem -> listItem.id })
             { index, item ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = modifier.fillMaxWidth()
-                ){
+                Box(
+                    modifier = modifier.fillMaxWidth().padding(4.dp)
+                ) {
                     var text by rememberSaveable { mutableStateOf(item.name) }
                     val label = index + 1
+                    var showDelete by rememberSaveable { mutableStateOf(false) }
 
-                    Spacer(modifier = Modifier.padding(24.dp))
                     OutlinedTextField(
                         value = text,
                         label = { Text(text = "$label") },
@@ -111,14 +111,28 @@ fun NewGroupScreen(
                             text = it
                             viewModel.updateItem(index, text)
                         },
-                        modifier = Modifier.weight(1f)
+                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                        modifier = Modifier
+                            .onFocusChanged { showDelete = it.isFocused }
+                            .fillMaxWidth()
                     )
 
-                    IconButton(
-                        onClick = { viewModel.removeItem(item) },
-                        modifier = Modifier.padding(top = 8.dp)
-                    ) {
-                        Icon(Icons.Rounded.Clear, contentDescription = stringResource(R.string.drag_and_drop))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = modifier.fillMaxWidth()
+                    ){
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        if (showDelete) {
+                            IconButton(
+                                onClick = { viewModel.removeItem(item) },
+                                modifier = Modifier.padding(top = 11.dp)
+                            ) {
+                                Icon(
+                                    Icons.Rounded.Clear, contentDescription = stringResource(R.string.delete_item)
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -133,10 +147,9 @@ fun NewGroupScreen(
                         onClick = { viewModel.addItemToList(viewModel.list.size) },
                         modifier = Modifier.padding(top = 8.dp)
                     ) {
-                        Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.drag_and_drop))
+                        Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.add_item))
                     }
                 }
-
             }
         }
     }

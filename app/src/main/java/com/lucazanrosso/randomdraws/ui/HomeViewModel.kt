@@ -26,9 +26,9 @@ class HomeViewModel (
                 initialValue = HomeUiState()
             )
 
-    fun duplicateGroup(groupName: String) {
+    fun duplicateGroup(groupName: String, newGroupNameToDuplicate: String) {
         viewModelScope.launch {
-            dao.duplicateGroup(groupName, "$groupName-2" )
+            dao.duplicateGroup(groupName, newGroupNameToDuplicate )
         }
     }
 
@@ -51,4 +51,4 @@ class HomeViewModel (
     }
 }
 
-data class HomeUiState(val group: List<Group> = listOf())
+data class HomeUiState(val groups: List<Group> = listOf())

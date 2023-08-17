@@ -23,7 +23,7 @@ class DrawViewModel (
     private val dao: ItemDao,
 ) : ViewModel() {
 
-    val groupName: String = checkNotNull(savedStateHandle[EditGroupDestination.itemIdArg])
+    var groupName: String = checkNotNull(savedStateHandle[EditGroupDestination.itemIdArg])
     var extractedItem = mutableStateOf(0)
     var extractedName = mutableStateOf("")
 

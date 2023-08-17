@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
@@ -22,8 +23,10 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lucazanrosso.randomdraws.R
@@ -75,9 +79,19 @@ fun HomeScreen(
         LazyColumn(modifier = Modifier
             .padding(innerPadding)
             .padding(start = 8.dp, end = 8.dp)) {
+            
+            if (homeUiState.groups.isEmpty()) {
+                item {
+                        Text(
+                            text = stringResource(R.string.no_groups_created),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(24.dp)
+                        )
+                }
+            }
 
             itemsIndexed(
-                items = homeUiState.group,
+                items = homeUiState.groups,
                 key = {_, listItem -> listItem.hashCode()
             }) { _, item ->
                 Card(
@@ -92,6 +106,8 @@ fun HomeScreen(
                     ) {
 
                         var displayMenu by remember { mutableStateOf(false) }
+                        var showDialog by remember { mutableStateOf(false) }
+                        var newGroupNameToDuplicate by remember { mutableStateOf("") }
 
                         Box(modifier = Modifier.padding(8.dp),
                             contentAlignment = Alignment.Center
@@ -108,8 +124,8 @@ fun HomeScreen(
                             modifier = Modifier.padding(8.dp)
                         ) {
                             Text(text = item.groupName, fontWeight = FontWeight.Bold)
-                            Text(text = "Members: " + item.groupCount /*+ ", to be drawn:  " + item.toBeDrawn*/)
-                            Text(text = "To be drawn:  " + item.toBeDrawn)
+                            Text(text = "${stringResource(R.string.total)}: " + item.groupCount /*+ ", to be drawn:  " + item.toBeDrawn*/)
+                            Text(text = "${stringResource(R.string.to_be_drawn)}:  " + item.toBeDrawn)
                         }
                         Spacer(modifier = Modifier.weight(1f))
                         Box {
@@ -126,10 +142,56 @@ fun HomeScreen(
                                 expanded = displayMenu,
                                 onDismissRequest = { displayMenu = false }
                             ) {
-                                DropdownMenuItem(text = { Text(text = "Duplicate") }, onClick = { viewModel.duplicateGroup(item.groupName) })
-                                DropdownMenuItem(text = { Text(text = "Edit") }, onClick = { navigateToEditGroup(item.groupName) })
-                                DropdownMenuItem(text = { Text(text = "Delete") }, onClick = { viewModel.deleteGroup(item.groupName) })
+                                DropdownMenuItem(
+                                    text = { Text(text = stringResource(R.string.duplicate)) },
+                                    onClick = {
+                                        showDialog = true
+                                        displayMenu = false
+                                    })
+                                DropdownMenuItem(
+                                    text = { Text(text = stringResource(R.string.edit_group)) },
+                                    onClick = { navigateToEditGroup(item.groupName) })
+                                DropdownMenuItem(
+                                    text = { Text(text = stringResource(R.string.delete_group)) },
+                                    onClick = { viewModel.deleteGroup(item.groupName) })
                             }
+                        }
+
+                        if (showDialog) {
+                            AlertDialog(
+                                onDismissRequest = { showDialog = false },
+                                title = { Text(text = stringResource(R.string.new_group_name)) },
+                                text = {
+                                    Column {
+                                        Text(text = stringResource(R.string.new_group_name_dialog_text))
+                                        OutlinedTextField(
+                                            value = newGroupNameToDuplicate,
+                                            onValueChange = { newGroupNameToDuplicate = it },
+                                            modifier = Modifier.padding(top = 16.dp)
+                                        )
+                                    }
+                                },
+                                confirmButton = {
+                                    TextButton(
+                                        onClick = {
+                                            viewModel.duplicateGroup(item.groupName, newGroupNameToDuplicate)
+                                            showDialog = false
+                                        },
+                                        enabled = newGroupNameToDuplicate.isNotEmpty()
+                                    ) {
+                                        Text(stringResource(R.string.confirm))
+                                    }
+                                },
+                                dismissButton = {
+                                    TextButton(
+                                        onClick = {
+                                            showDialog = false
+                                        }) {
+                                        Text(stringResource(R.string.cancel))
+                                    }
+                                },
+
+                                )
                         }
 
                     }

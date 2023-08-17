@@ -13,7 +13,6 @@ import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
-import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,6 +33,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
@@ -116,7 +116,7 @@ fun DrawScreen(
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Star,
+                        painter = painterResource(id = R.drawable.outline_casino_24),
                         contentDescription = stringResource(R.string.new_group)
                     )
                 }
@@ -211,7 +211,7 @@ fun DrawScreen(
             AlertDialog(
                 onDismissRequest = { showDialog = false },
                 title = { Text(viewModel.extractedName.value) },
-//                text = { Text("was extracted") },
+                text = { Text(text = stringResource(R.string.was_extracted)) },
                 confirmButton = {
                     TextButton(onClick = {
                         viewModel.moveToExtracted()
@@ -225,6 +225,7 @@ fun DrawScreen(
                         Text("Cancel".uppercase())
                     }
                 },
+
             )
         }
     }

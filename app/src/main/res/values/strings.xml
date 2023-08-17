@@ -10,4 +10,15 @@
     <string name="draw">Draw</string>
     <string name="reset_draw">Reset Draw</string>
     <string name="done">Done</string>
+    <string name="delete_item">Delete Item</string>
+    <string name="add_item">Add item</string>
+    <string name="total">Total</string>
+    <string name="to_be_drawn">To be drawn</string>
+    <string name="duplicate">Duplicate</string>
+    <string name="no_groups_created">Press the "+" button to create a new group, then select the group and roll the dice!</string>
+    <string name="new_group_name">Duplicate group name</string>
+    <string name="new_group_name_dialog_text">Choose a name for the duplicate group. Note: if you choose the name of an existing group the duplicate members will be added to that group.</string>
+    <string name="was_extracted">was extracted</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>
