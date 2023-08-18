@@ -35,41 +35,41 @@ class EditGroupViewModel(
             list = dao.getGroupDetails(groupName)
                 .filterNotNull()
                 .first()
-                .mapIndexed{ index, item -> ItemDetails(item.id, index, item.group, item.name) }
+                .mapIndexed{ index, item -> ItemDetails(item.id, index, item.group, item.name, item.extracted) }
                 .toMutableStateList()
             progressiveIdForKeys.value = list.size
         }
     }
 
-    private fun validateInput () {
-        if (newGroupName.isEmpty()) isValid = false
-        if (list.isEmpty()) isValid = false
+    private fun validateInput(): Boolean {
+        if (newGroupName.isEmpty()) return false
+        if (list.isEmpty()) return false
         list.forEach {
-            if (it.name.isEmpty()) isValid = false
+            if (it.name.isEmpty()) return false
         }
-        isValid = true
+        return true
     }
 
     fun updateGroupName(groupName: String) {
         newGroupName = groupName
-        validateInput()
+        isValid = validateInput()
     }
 
     fun addItemToList(index: Int) {
         list.add(index, ItemDetails(index = progressiveIdForKeys.value, group = groupName, name = ""))
         progressiveIdForKeys.value++
-        validateInput()
+        isValid = validateInput()
     }
 
     fun updateItem(index: Int, name: String) {
         list[index].name = name
-        validateInput()
+        isValid = validateInput()
     }
 
     fun deleteItem(item: ItemDetails) {
         list.remove(item)
         itemsToDelete.add(item)
-        validateInput()
+        isValid = validateInput()
     }
 
     fun deleteItemsFromDb() {
@@ -90,6 +90,7 @@ class EditGroupViewModel(
     }
 
     companion object {
+//        private const val TIMEOUT_MILLIS = 5_000L
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 EditGroupViewModel(

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -89,8 +92,13 @@ fun NewGroupScreen(
                         label = { Text(text = "Group name") },
                         onValueChange = { viewModel.updateGroupName(it) },
                         keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-                        modifier = Modifier.fillMaxWidth().padding(4.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp)
                     )
+                Divider(
+                    thickness = 1.dp,
+                    modifier = modifier.padding(top = 16.dp, bottom = 8.dp))
             }
 
             itemsIndexed(
@@ -98,7 +106,9 @@ fun NewGroupScreen(
                 key = {_, listItem -> listItem.id })
             { index, item ->
                 Box(
-                    modifier = modifier.fillMaxWidth().padding(4.dp)
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(4.dp)
                 ) {
                     var text by rememberSaveable { mutableStateOf(item.name) }
                     val label = index + 1
@@ -111,19 +121,20 @@ fun NewGroupScreen(
                             text = it
                             viewModel.updateItem(index, text)
                         },
-                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = { viewModel.addItemToList(index) }),
                         modifier = Modifier
                             .onFocusChanged { showDelete = it.isFocused }
                             .fillMaxWidth()
                     )
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = modifier.fillMaxWidth()
-                    ){
-                        Spacer(modifier = Modifier.weight(1f))
+                    if (showDelete) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = modifier.fillMaxWidth()
+                        ){
+                            Spacer(modifier = Modifier.weight(1f))
 
-                        if (showDelete) {
                             IconButton(
                                 onClick = { viewModel.removeItem(item) },
                                 modifier = Modifier.padding(top = 11.dp)

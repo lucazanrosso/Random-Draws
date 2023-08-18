@@ -106,7 +106,8 @@ fun HomeScreen(
                     ) {
 
                         var displayMenu by remember { mutableStateOf(false) }
-                        var showDialog by remember { mutableStateOf(false) }
+                        var showDuplicateDialog by remember { mutableStateOf(false) }
+                        var showDeleteDialog by remember { mutableStateOf(false) }
                         var newGroupNameToDuplicate by remember { mutableStateOf("") }
 
                         Box(modifier = Modifier.padding(8.dp),
@@ -145,7 +146,7 @@ fun HomeScreen(
                                 DropdownMenuItem(
                                     text = { Text(text = stringResource(R.string.duplicate)) },
                                     onClick = {
-                                        showDialog = true
+                                        showDuplicateDialog = true
                                         displayMenu = false
                                     })
                                 DropdownMenuItem(
@@ -153,13 +154,16 @@ fun HomeScreen(
                                     onClick = { navigateToEditGroup(item.groupName) })
                                 DropdownMenuItem(
                                     text = { Text(text = stringResource(R.string.delete_group)) },
-                                    onClick = { viewModel.deleteGroup(item.groupName) })
+                                    onClick = {
+                                        showDeleteDialog = true
+                                        displayMenu = false
+                                    })
                             }
                         }
 
-                        if (showDialog) {
+                        if (showDuplicateDialog) {
                             AlertDialog(
-                                onDismissRequest = { showDialog = false },
+                                onDismissRequest = { showDuplicateDialog = false },
                                 title = { Text(text = stringResource(R.string.new_group_name)) },
                                 text = {
                                     Column {
@@ -175,7 +179,7 @@ fun HomeScreen(
                                     TextButton(
                                         onClick = {
                                             viewModel.duplicateGroup(item.groupName, newGroupNameToDuplicate)
-                                            showDialog = false
+                                            showDuplicateDialog = false
                                         },
                                         enabled = newGroupNameToDuplicate.isNotEmpty()
                                     ) {
@@ -185,18 +189,39 @@ fun HomeScreen(
                                 dismissButton = {
                                     TextButton(
                                         onClick = {
-                                            showDialog = false
+                                            showDuplicateDialog = false
                                         }) {
                                         Text(stringResource(R.string.cancel))
                                     }
-                                },
-
-                                )
+                                }
+                            )
                         }
 
+                        if (showDeleteDialog) {
+                            AlertDialog(
+                                onDismissRequest = { showDeleteDialog = false },
+                                title = { Text(text = stringResource(R.string.delete_group)) },
+                                text = { Text(text = stringResource(R.string.delete_group_dialog_text)) },
+                                confirmButton = {
+                                    TextButton(
+                                        onClick = {
+                                            viewModel.deleteGroup(item.groupName)
+                                            showDeleteDialog = false
+                                        },
+                                    ) {
+                                        Text(stringResource(R.string.confirm))
+                                    }
+                                },
+                                dismissButton = {
+                                    TextButton( onClick = { showDeleteDialog = false })
+                                    {
+                                        Text(stringResource(R.string.cancel))
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
-
             }
         }
     }

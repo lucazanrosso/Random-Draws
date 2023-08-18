@@ -5,10 +5,10 @@
     <string name="back_button">Back button</string>
     <string name="new_group">New group</string>
     <string name="drag_and_drop">Drag and Drop</string>
-    <string name="delete_group">Delete Group</string>
-    <string name="edit_group">Edit Group</string>
+    <string name="delete_group">Delete group</string>
+    <string name="edit_group">Edit group</string>
     <string name="draw">Draw</string>
-    <string name="reset_draw">Reset Draw</string>
+    <string name="reset_draw">Reset draws</string>
     <string name="done">Done</string>
     <string name="delete_item">Delete Item</string>
     <string name="add_item">Add item</string>
@@ -21,4 +21,8 @@
     <string name="was_extracted">was extracted</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="delete_group_dialog_text">Are you sure you want to delete the group?</string>
+    <string name="names">Names</string>
+    <string name="edit_draw">Edit draw</string>
+    <string name="reset_draws_dialog_text">Are you sure you want to reset the draws?</string>
 </resources>

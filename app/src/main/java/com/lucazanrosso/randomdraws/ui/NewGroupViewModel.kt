@@ -23,39 +23,39 @@ class NewGroupViewModel(
     var group = mutableStateOf("")
     var list = mutableStateListOf(
         ItemDetails(0, 0, "", ""),
-        ItemDetails(1, 1, "", ""),
-        ItemDetails(2, 2, "", "")
+//        ItemDetails(1, 1, "", ""),
+//        ItemDetails(2, 2, "", "")
     )
     var isValid by mutableStateOf(false)
 
-    private fun validateInput () {
+    private fun validateInput (): Boolean {
         if (group.value.isEmpty()) isValid = false
         if (list.isEmpty()) isValid = false
         list.forEach {
             if (it.name.isEmpty()) isValid = false
         }
-        isValid = true
+        return true
     }
 
     fun updateGroupName(groupName: String) {
         group.value = groupName
-        validateInput()
+        isValid = validateInput()
     }
 
     fun updateItem(index: Int, name: String) {
         list[index].name = name
-        validateInput()
+        isValid = validateInput()
     }
 
     fun addItemToList(index: Int) {
         list.add(index, ItemDetails(progressiveIdForKeys.value, name = ""))
         progressiveIdForKeys.value++
-        validateInput()
+        isValid = validateInput()
     }
 
     fun removeItem(item: ItemDetails) {
         list.remove(item)
-        validateInput()
+        isValid = validateInput()
     }
 
     fun saveListToDb() {

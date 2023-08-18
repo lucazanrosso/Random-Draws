@@ -7,12 +7,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.rounded.Done
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -61,6 +60,7 @@ fun DrawScreen(
     val extractedUiState by viewModel.extractedUiState.collectAsState()
     var showDialog by rememberSaveable { mutableStateOf(false) }
     var showEditDraw by rememberSaveable { mutableStateOf(false) }
+    var showResetDialog by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -70,15 +70,15 @@ fun DrawScreen(
                     if (!showEditDraw) {
                         IconButton(onClick = navigateBack) {
                             Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.done)
+                                imageVector = Icons.Rounded.ArrowBack,
+                                contentDescription = stringResource(R.string.back_button)
                             )
                         }
                     } else {
-                        IconButton(onClick = { viewModel.resetDraw() }) {
+                        IconButton(onClick = { showEditDraw = false }) {
                             Icon(
-                                imageVector = Icons.Filled.Refresh,
-                                contentDescription = stringResource(R.string.reset_draw)
+                                imageVector = Icons.Rounded.ArrowBack,
+                                contentDescription = stringResource(R.string.back_button)
                             )
                         }
                     }
@@ -90,16 +90,17 @@ fun DrawScreen(
                         }) {
                             Icon(
                                 imageVector = Icons.Rounded.Edit,
-                                contentDescription = "Localized description"
+                                contentDescription = stringResource(R.string.edit_draw)
                             )
                         }
-                    } else {
+                    }
+                    else {
                         IconButton(onClick = {
-                            showEditDraw = false
+                            showResetDialog = true
                         }) {
                             Icon(
-                                imageVector = Icons.Rounded.Done,
-                                contentDescription = "Localized description"
+                                imageVector = Icons.Rounded.Refresh,
+                                contentDescription = stringResource(R.string.reset_draw)
                             )
                         }
                     }
@@ -217,16 +218,38 @@ fun DrawScreen(
                         viewModel.moveToExtracted()
                         showDialog = false
                     }) {
-                        Text("Confirm".uppercase())
+                        Text("Confirm")
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showDialog = false }) {
-                        Text("Cancel".uppercase())
+                        Text("Cancel")
                     }
                 },
 
             )
+        }
+
+        if (showResetDialog) {
+            AlertDialog(
+                onDismissRequest = { showResetDialog = false },
+                title = { Text(stringResource(R.string.reset_draw)) },
+                text = { Text(text = stringResource(R.string.reset_draws_dialog_text)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        viewModel.resetDraw()
+                        showResetDialog = false
+                    }) {
+                        Text("Confirm")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showResetDialog = false }) {
+                        Text("Cancel")
+                    }
+                },
+
+                )
         }
     }
 }
