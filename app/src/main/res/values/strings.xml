@@ -25,4 +25,5 @@
     <string name="names">Names</string>
     <string name="edit_draw">Edit draw</string>
     <string name="reset_draws_dialog_text">Are you sure you want to reset the draws?</string>
+    <string name="close">Close</string>
 </resources>

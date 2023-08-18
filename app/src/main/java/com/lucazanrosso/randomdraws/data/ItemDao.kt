@@ -35,8 +35,12 @@ interface ItemDao {
     @Query("SELECT `group` AS groupName, COUNT(*) AS groupCount, SUM(items.extracted = '0') AS toBeDrawn from items GROUP BY `group` ORDER BY `group` ASC")
     fun getGroups(): Flow<List<Group>>
 
+
+//    @Query("SELECT * from items WHERE `group` = :groupName ORDER BY name ASC")
+//    fun getGroupDetails(groupName: String): Flow<List<Item>>
+
     @Query("SELECT * from items WHERE `group` = :groupName ORDER BY name ASC")
-    fun getGroupDetails(groupName: String): Flow<List<Item>>
+    fun getGroupDetails(groupName: String): /*Flow<*/List<Item>/*>*/
 
     @Query("SELECT * from items WHERE `group` = :groupName AND extracted = 0 ORDER BY name ASC")
     fun getNotExtractedMembers(groupName: String): Flow<List<Item>>

@@ -29,10 +29,10 @@ class NewGroupViewModel(
     var isValid by mutableStateOf(false)
 
     private fun validateInput (): Boolean {
-        if (group.value.isEmpty()) isValid = false
-        if (list.isEmpty()) isValid = false
+        if (group.value.isEmpty()) return false
+        if (list.isEmpty()) return false
         list.forEach {
-            if (it.name.isEmpty()) isValid = false
+            if (it.name.isEmpty()) return false
         }
         return true
     }

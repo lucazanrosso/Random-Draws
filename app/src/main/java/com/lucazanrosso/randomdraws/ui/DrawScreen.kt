@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
@@ -16,6 +17,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -77,8 +79,8 @@ fun DrawScreen(
                     } else {
                         IconButton(onClick = { showEditDraw = false }) {
                             Icon(
-                                imageVector = Icons.Rounded.ArrowBack,
-                                contentDescription = stringResource(R.string.back_button)
+                                imageVector = Icons.Rounded.Close,
+                                contentDescription = stringResource(R.string.close)
                             )
                         }
                     }
@@ -166,6 +168,20 @@ fun DrawScreen(
                             }
                         }
                     }
+                }
+            }
+
+            if((extractedUiState.items.isNotEmpty() and notExtractedUiState.items.isNotEmpty())) {
+                item {
+                    Divider(
+                        thickness = 1.dp,
+                        modifier = modifier.padding(
+                            top = 16.dp,
+                            bottom = 16.dp,
+                            start = 4.dp,
+                            end = 4.dp
+                        )
+                    )
                 }
             }
 
