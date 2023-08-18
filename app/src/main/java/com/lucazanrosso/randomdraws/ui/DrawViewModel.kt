@@ -24,7 +24,7 @@ class DrawViewModel (
 ) : ViewModel() {
 
     var groupName: String = checkNotNull(savedStateHandle[EditGroupDestination.itemIdArg])
-    var extractedItem = mutableStateOf(0)
+    private var extractedItem = mutableStateOf(0)
     var extractedName = mutableStateOf("")
 
     val notExtractedUiState: StateFlow<DrawUiState> =
@@ -47,8 +47,6 @@ class DrawViewModel (
                 initialValue = DrawUiState()
             )
 
-
-
     fun randomDraw() {
         extractedItem.value = (0 until notExtractedUiState.value.items.size).random()
         extractedName.value = notExtractedUiState.value.items[extractedItem.value].name
@@ -61,18 +59,24 @@ class DrawViewModel (
         }
     }
 
-    fun moveToNotExtracted(index: Int) {
-        viewModelScope.launch {
-            val selectedItem = extractedUiState.value.items[index]
-            dao.update(selectedItem.copy(extracted = false))
-        }
-    }
-
     fun resetDraw() {
         viewModelScope.launch {
             extractedUiState.value.items.forEach{
                 dao.update(it.copy(extracted = false))
             }
+        }
+    }
+
+    fun duplicateGroup(groupName: String, newGroupNameToDuplicate: String) {
+        viewModelScope.launch {
+            dao.duplicateGroup(groupName, newGroupNameToDuplicate )
+        }
+    }
+
+
+    fun deleteGroup (groupName: String) {
+        viewModelScope.launch {
+            dao.deleteGroup(groupName)
         }
     }
 

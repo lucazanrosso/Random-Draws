@@ -1,28 +1,26 @@
 package com.lucazanrosso.randomdraws.ui
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.KeyboardArrowUp
-import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -30,9 +28,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,67 +53,79 @@ object DrawDestination : NavigationDestination {
 @Composable
 fun DrawScreen(
     navigateBack: () -> Unit,
+    navigateToEditDraw: (String) -> Unit,
+    navigateToEditGroup: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DrawViewModel = viewModel(factory = DrawViewModel.Factory)
 ) {
     val notExtractedUiState by viewModel.notExtractedUiState.collectAsState()
     val extractedUiState by viewModel.extractedUiState.collectAsState()
-    var showDialog by rememberSaveable { mutableStateOf(false) }
-    var showEditDraw by rememberSaveable { mutableStateOf(false) }
+    var showExtractedDialog by rememberSaveable { mutableStateOf(false) }
     var showResetDialog by rememberSaveable { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) }
+    var showDuplicateDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var newGroupNameToDuplicate by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(text = viewModel.groupName ) },
                 navigationIcon = {
-                    if (!showEditDraw) {
-                        IconButton(onClick = navigateBack) {
-                            Icon(
-                                imageVector = Icons.Rounded.ArrowBack,
-                                contentDescription = stringResource(R.string.back_button)
-                            )
-                        }
-                    } else {
-                        IconButton(onClick = { showEditDraw = false }) {
-                            Icon(
-                                imageVector = Icons.Rounded.Close,
-                                contentDescription = stringResource(R.string.close)
-                            )
-                        }
+                    IconButton(onClick = navigateBack) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = stringResource(R.string.back_button)
+                        )
                     }
                 },
                 actions = {
-                    if (!showEditDraw) {
-                        IconButton(onClick = {
-                            showEditDraw = true
-                        }) {
-                            Icon(
-                                imageVector = Icons.Rounded.Edit,
-                                contentDescription = stringResource(R.string.edit_draw)
-                            )
-                        }
+                    IconButton(onClick = {
+                        showMenu = true
+                    }) {
+                        Icon(
+                            imageVector = Icons.Rounded.MoreVert,
+                            contentDescription = stringResource(R.string.edit_draw)
+                        )
                     }
-                    else {
-                        IconButton(onClick = {
-                            showResetDialog = true
-                        }) {
-                            Icon(
-                                imageVector = Icons.Rounded.Refresh,
-                                contentDescription = stringResource(R.string.reset_draw)
-                            )
-                        }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(R.string.edit_draw)) },
+                            onClick = { navigateToEditDraw(viewModel.groupName) })
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(R.string.reset_draw)) },
+                            onClick = {
+                                showResetDialog = true
+                                showMenu = false
+                            })
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(R.string.duplicate)) },
+                            onClick = {
+                                showDuplicateDialog = true
+                                showMenu = false
+                            })
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(R.string.edit_group)) },
+                            onClick = { navigateToEditGroup(viewModel.groupName) })
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(R.string.delete_group)) },
+                            onClick = {
+                                showDeleteDialog = true
+                                showMenu = false
+                            })
                     }
                 }
-
             )
         },
         floatingActionButton = {
-            if (!showEditDraw and notExtractedUiState.items.isNotEmpty()) {
+            if (notExtractedUiState.items.isNotEmpty()) {
                 FloatingActionButton(
                     onClick = {
                         viewModel.randomDraw()
-                        showDialog = true
+                        showExtractedDialog = true
                     }
                 ) {
                     Icon(
@@ -136,7 +146,7 @@ fun DrawScreen(
             itemsIndexed(
                 items = notExtractedUiState.items,
                 key = {_, listItem -> listItem.hashCode()
-                }) { index, item ->
+                }) { _, item ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -145,29 +155,10 @@ fun DrawScreen(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     )
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = modifier.fillMaxWidth()
-                    ) {
-
-                        Text(
-                            text = item.name,
-                            modifier = modifier.padding(16.dp)
-                        )
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        if (showEditDraw) {
-                            IconButton(
-                                onClick = { viewModel.moveToExtracted(index) },
-                            ) {
-                                Icon(
-                                    Icons.Rounded.KeyboardArrowDown,
-                                    contentDescription = stringResource(R.string.drag_and_drop)
-                                )
-                            }
-                        }
-                    }
+                    Text(
+                        text = item.name,
+                        modifier = modifier.padding(16.dp)
+                    )
                 }
             }
 
@@ -188,57 +179,38 @@ fun DrawScreen(
             itemsIndexed(
                 items = extractedUiState.items,
                 key = {_, listItem -> listItem.hashCode()
-            }) { index, item ->
+            }) { _, item ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = modifier.fillMaxWidth()
-                    ) {
+                    Text(
+                        text = item.name,
+                        fontSize = 16.sp,
+                        style = TextStyle(textDecoration = TextDecoration.LineThrough),
+                        modifier = modifier.padding(16.dp)
 
-                        Text(
-                            text = item.name,
-                            fontSize = 16.sp,
-                            style = TextStyle(textDecoration = TextDecoration.LineThrough),
-                            modifier = modifier.padding(16.dp)
-
-                        )
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        if (showEditDraw) {
-                            IconButton(
-                                onClick = { viewModel.moveToNotExtracted(index) },
-                            ) {
-                                Icon(
-                                    Icons.Rounded.KeyboardArrowUp,
-                                    contentDescription = stringResource(R.string.drag_and_drop)
-                                )
-                            }
-                        }
-                    }
+                    )
                 }
             }
         }
 
-        if (showDialog) {
+        if (showExtractedDialog) {
             AlertDialog(
-                onDismissRequest = { showDialog = false },
+                onDismissRequest = { showExtractedDialog = false },
                 title = { Text(viewModel.extractedName.value) },
                 text = { Text(text = stringResource(R.string.was_extracted)) },
                 confirmButton = {
                     TextButton(onClick = {
                         viewModel.moveToExtracted()
-                        showDialog = false
+                        showExtractedDialog = false
                     }) {
                         Text("Confirm")
                     }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showDialog = false }) {
+                    TextButton(onClick = { showExtractedDialog = false }) {
                         Text("Cancel")
                     }
                 },
@@ -265,7 +237,69 @@ fun DrawScreen(
                     }
                 },
 
-                )
+            )
+        }
+
+        if (showDuplicateDialog) {
+            AlertDialog(
+                onDismissRequest = { showDuplicateDialog = false },
+                title = { Text(text = stringResource(R.string.new_group_name)) },
+                text = {
+                    Column {
+                        Text(text = stringResource(R.string.new_group_name_dialog_text))
+                        OutlinedTextField(
+                            value = newGroupNameToDuplicate,
+                            onValueChange = { newGroupNameToDuplicate = it },
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            viewModel.duplicateGroup(viewModel.groupName, newGroupNameToDuplicate)
+                            showDuplicateDialog = false
+                            navigateBack()
+                        },
+                        enabled = newGroupNameToDuplicate.isNotEmpty()
+                    ) {
+                        Text(stringResource(R.string.confirm))
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            showDuplicateDialog = false
+                        }) {
+                        Text(stringResource(R.string.cancel))
+                    }
+                }
+            )
+        }
+
+        if (showDeleteDialog) {
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                title = { Text(text = stringResource(R.string.delete_group)) },
+                text = { Text(text = stringResource(R.string.delete_group_dialog_text)) },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            viewModel.deleteGroup(viewModel.groupName)
+                            showDeleteDialog = false
+                            navigateBack()
+                        },
+                    ) {
+                        Text(stringResource(R.string.confirm))
+                    }
+                },
+                dismissButton = {
+                    TextButton( onClick = { showDeleteDialog = false })
+                    {
+                        Text(stringResource(R.string.cancel))
+                    }
+                }
+            )
         }
     }
 }

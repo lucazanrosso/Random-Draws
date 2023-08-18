@@ -14,7 +14,7 @@
     <string name="add_item">Add item</string>
     <string name="total">Total</string>
     <string name="to_be_drawn">To be drawn</string>
-    <string name="duplicate">Duplicate</string>
+    <string name="duplicate">Duplicate group</string>
     <string name="no_groups_created">Press the "+" button to create a new group, then select the group and roll the dice!</string>
     <string name="new_group_name">Duplicate group name</string>
     <string name="new_group_name_dialog_text">Choose a name for the duplicate group. Note: if you choose the name of an existing group the duplicate members will be added to that group.</string>
@@ -23,7 +23,7 @@
     <string name="cancel">Cancel</string>
     <string name="delete_group_dialog_text">Are you sure you want to delete the group?</string>
     <string name="names">Names</string>
-    <string name="edit_draw">Edit draw</string>
+    <string name="edit_draw">Edit draws</string>
     <string name="reset_draws_dialog_text">Are you sure you want to reset the draws?</string>
     <string name="close">Close</string>
 </resources>

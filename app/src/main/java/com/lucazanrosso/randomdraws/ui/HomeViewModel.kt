@@ -12,10 +12,9 @@ import kotlinx.coroutines.flow.map
 import androidx.lifecycle.viewModelScope
 import com.lucazanrosso.randomdraws.data.Group
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.launch
 
 class HomeViewModel (
-    private val dao: ItemDao,
+    dao: ItemDao,
 ) : ViewModel() {
 
     val homeUiState: StateFlow<HomeUiState> =
@@ -25,19 +24,6 @@ class HomeViewModel (
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
                 initialValue = HomeUiState()
             )
-
-    fun duplicateGroup(groupName: String, newGroupNameToDuplicate: String) {
-        viewModelScope.launch {
-            dao.duplicateGroup(groupName, newGroupNameToDuplicate )
-        }
-    }
-
-
-    fun deleteGroup (groupName: String) {
-        viewModelScope.launch {
-            dao.deleteGroup(groupName)
-        }
-    }
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L

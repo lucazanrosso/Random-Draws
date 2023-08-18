@@ -8,6 +8,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.lucazanrosso.randomdraws.ui.DrawDestination
 import com.lucazanrosso.randomdraws.ui.DrawScreen
+import com.lucazanrosso.randomdraws.ui.EditDrawDestination
+import com.lucazanrosso.randomdraws.ui.EditDrawScreen
 import com.lucazanrosso.randomdraws.ui.EditGroupDestination
 import com.lucazanrosso.randomdraws.ui.EditGroupScreen
 import com.lucazanrosso.randomdraws.ui.HomeDestination
@@ -37,7 +39,6 @@ fun RandomDrawsNavHost(
             HomeScreen(
                 navigateToNewGroup = { navController.navigate(NewGroupDestination.route)},
                 navigateToDraw = { navController.navigate("${DrawDestination.route}/${it}") },
-                navigateToEditGroup = { navController.navigate("${EditGroupDestination.route}/${it}") }
             )
         }
 
@@ -54,7 +55,9 @@ fun RandomDrawsNavHost(
             })
         ) {
             DrawScreen(
-                navigateBack = { navController.navigateUp() }
+                navigateBack = { navController.navigateUp() },
+                navigateToEditGroup = { navController.navigate("${EditGroupDestination.route}/${it}") },
+                navigateToEditDraw = { navController.navigate("${EditDrawDestination.route}/${it}") }
             )
         }
 
@@ -65,6 +68,17 @@ fun RandomDrawsNavHost(
             })
         ) {
             EditGroupScreen(
+                navigateBack = { navController.navigateUp() }
+            )
+        }
+
+        composable(
+            route = EditDrawDestination.routeWithArgs,
+            arguments = listOf(navArgument(EditDrawDestination.itemIdArg) {
+                type = NavType.StringType
+            })
+        ) {
+            EditDrawScreen(
                 navigateBack = { navController.navigateUp() }
             )
         }
