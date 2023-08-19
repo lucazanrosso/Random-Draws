@@ -73,7 +73,6 @@ class DrawViewModel (
         }
     }
 
-
     fun deleteGroup (groupName: String) {
         viewModelScope.launch {
             dao.deleteGroup(groupName)

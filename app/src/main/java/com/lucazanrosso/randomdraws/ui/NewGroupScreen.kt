@@ -71,7 +71,6 @@ fun NewGroupScreen(
 
     if (moveFocusToLast) {
         LaunchedEffect(viewModel.list) {
-//            focusManager.clearFocus()
             focusRequester.requestFocus()
             moveFocusToLast = false
         }
@@ -117,7 +116,10 @@ fun NewGroupScreen(
                         value = viewModel.group.value,
                         label = { Text(text = "Group name") },
                         onValueChange = { viewModel.updateGroupName(it) },
-                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = {
+                            moveFocusToNext = true
+                        }),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(4.dp)

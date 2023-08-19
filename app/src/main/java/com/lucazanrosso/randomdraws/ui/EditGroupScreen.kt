@@ -120,7 +120,10 @@ fun EditGroupScreen(
                     value = viewModel.newGroupName,
                     label = { Text(text = "Group name") },
                     onValueChange = { viewModel.updateGroupName(it) },
-                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = {
+                        moveFocusToNext = true
+                    }),
                     modifier = Modifier
                         .fillParentMaxWidth()
                         .padding(4.dp)

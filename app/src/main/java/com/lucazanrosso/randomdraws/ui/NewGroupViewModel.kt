@@ -22,9 +22,7 @@ class NewGroupViewModel(
     private var progressiveIdForKeys = mutableStateOf(3)
     var group = mutableStateOf("")
     var list = mutableStateListOf(
-        ItemDetails(0, 0, "", ""),
-//        ItemDetails(1, 1, "", ""),
-//        ItemDetails(2, 2, "", "")
+        ItemDetails(0, 0, "", "")
     )
     var isValid by mutableStateOf(false)
 
