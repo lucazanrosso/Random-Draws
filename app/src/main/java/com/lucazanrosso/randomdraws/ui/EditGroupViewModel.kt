@@ -41,6 +41,17 @@ class EditGroupViewModel(
         }
     }
 
+    /*init {
+//        viewModelScope.launch {
+        list = dao.getGroupDetails(groupName)
+//                .filterNotNull()
+//                .first()
+            .mapIndexed{ index, item -> ItemDetails(item.id, index, item.group, item.name, item.extracted) }
+            .toMutableStateList()
+        progressiveIdForKeys.value = list.size
+//        }
+    }*/
+
     private fun validateInput(): Boolean {
         if (newGroupName.isEmpty()) return false
         if (list.isEmpty()) return false
