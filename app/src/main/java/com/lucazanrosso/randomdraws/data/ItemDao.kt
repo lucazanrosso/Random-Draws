@@ -40,7 +40,7 @@ interface ItemDao {
 //    fun getGroupDetails(groupName: String): Flow<List<Item>>
 
     @Query("SELECT * from items WHERE `group` = :groupName ORDER BY name ASC")
-    fun getGroupDetails(groupName: String): /*Flow<*/List<Item>/*>*/
+    fun getGroupDetails(groupName: String): Flow<List<Item>>
 
     @Query("SELECT * from items WHERE `group` = :groupName AND extracted = 0 ORDER BY name ASC")
     fun getNotExtractedMembers(groupName: String): Flow<List<Item>>

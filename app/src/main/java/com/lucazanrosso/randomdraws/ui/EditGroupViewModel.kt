@@ -14,6 +14,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.lucazanrosso.randomdraws.RandomDrawsApplication
 import com.lucazanrosso.randomdraws.data.ItemDao
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class EditGroupViewModel(
@@ -29,14 +31,14 @@ class EditGroupViewModel(
     var isValid by mutableStateOf(true)
 
     init {
-//        viewModelScope.launch {
+        viewModelScope.launch {
             list = dao.getGroupDetails(groupName)
-//                .filterNotNull()
-//                .first()
+                .filterNotNull()
+                .first()
                 .mapIndexed{ index, item -> ItemDetails(item.id, index, item.group, item.name, item.extracted) }
                 .toMutableStateList()
             progressiveIdForKeys.value = list.size
-//        }
+        }
     }
 
     private fun validateInput(): Boolean {
