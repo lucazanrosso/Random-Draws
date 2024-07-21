@@ -152,7 +152,7 @@ fun DrawScreen(
                         .fillMaxWidth()
                         .padding(8.dp),
                     colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     )
                 ) {
                     Text(
@@ -184,6 +184,9 @@ fun DrawScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    )
                 ) {
                     Text(
                         text = item.name,

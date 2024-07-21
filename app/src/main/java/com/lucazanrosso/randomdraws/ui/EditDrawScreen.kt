@@ -131,6 +131,9 @@ fun EditDrawScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    )
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
