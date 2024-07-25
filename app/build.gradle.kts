@@ -12,7 +12,7 @@ android {
         applicationId = "com.lucazanrosso.randomdraws"
         minSdk = 24
         targetSdk = 34
-        versionCode = 7
+        versionCode = 8
         versionName = "0.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
